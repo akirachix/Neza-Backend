@@ -19,7 +19,7 @@ Django
 - Python Package Manager (pip)
 
 
-### INSTALLATION
+### Installation
 To run this Django project locally, please follow these steps:
 - Clone the repository:
   "git clone https://github.com/akirachix/Neza-Backend.git"
