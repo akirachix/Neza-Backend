@@ -22,35 +22,42 @@ Django
 ### Installation
 To run this Django project locally, please follow these steps:
 - Clone the repository:
-  "git clone https://github.com/akirachix/Neza-Backend.git"
+  ```
+  git clone https://github.com/akirachix/Neza-Backend.git
+  ```
   
 - Navigate to the project directory:
-  "cd Neza-Backend"
+  ```
+  cd Neza-Backend
+  ```
   
 - Create a virtual environment:
-  "python -m venv <your environment name>"
+  ```
+  python -m venv <your environment name>
+  ```
 
 - Activate the virtual environment:
-  On Linux and macOS - "python manage.py source <environment name>/bin/activate"
-  On Windows - "<environment name"\scripts\activate
+  On Linux and macOS:
+   ```
+  python manage.py source <environment name>/bin/activate
+  ```
+  On Windows:
+  ```
+  <environment name>\scripts\activate
+  ```
   
 - Install requirements:
-  "pip install -r requirements.txt"
+  ```
+  pip install -r requirements.txt
+  ```
   
 - Apply migrations:
-  "python manage.py migrate"
+  ```
+  python manage.py migrate
+  ```
   
 - Run the development server:
-  "python manage.py runserver"
+  ```
+  python manage.py runserver
+  ```
 
-
-## Contacts
-Joyeuse Kabanyana - [@Linkedin](https://www.linkedin.com/in/joyeuse-kabanyana) - joyeusekabanyana@gmail.com
-<br>
-Esther Mwangi - [@Linkedin](https://www.linkedin.com/in/esther-mwangi-/) - mwangiestherwambuii@gmail.com
-<br>
-Loice Kanini - [@Linkedin](https://www.linkedin.com/in/loice-mwau-94759426a/) - mwauloice@gmail.com
-<br>
-Grace Kazungu - [@Linkedin](https://www.linkedin.com/in/gracekazungu/) - kazungungrace@gmail.com
-<br>
-Marion Njeri - [@Linkedin](https://www.linkedin.com/in/marion-njeri/) - njeriwmarion@gmail.com
