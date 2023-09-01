@@ -3,8 +3,7 @@ name: Django CI/CD
 on:
   push:
     branches: [ "dev" ]
-  
-
+    
 jobs:
   build:
 
@@ -20,8 +19,15 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
+        
     - name: Install Dependencies
         pip install -r requirements.txt
+        
+    - name: Make migrations
+        run:
+        python manage.py migrate
+        python manage.py runserver
+        
     - name: Run Tests
-      run: |
+      run:
         python manage.py test
