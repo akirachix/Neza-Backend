@@ -9,7 +9,6 @@ This is the backend logic for TinyLife Wellness, a product that predicts the ris
 - [Built With](#built-with)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
-- [Contacts](#contacts)
 
 ### Built With
 Django
