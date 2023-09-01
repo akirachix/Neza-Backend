@@ -1,8 +1,4 @@
-# TinyLife_wellness-Backend
-
-<a name="readme-top"></a>
-<h3 align="center">TinyLife_wellness-Backend</h3>
-  <img src="images/logo.png" alt="Logo" width="80" height="80">
+# TinyLife Wellness Backend
 
 
 ## Description
