@@ -31,20 +31,20 @@ To run this Django project locally, please follow these steps:
 - Navigate to the project directory:
   "cd Neza-Backend"
   
-- Create a virtual environment
+- Create a virtual environment:
   "python -m venv <your environment name>"
 
-- Activate the virtual environment
+- Activate the virtual environment:
   On Linux and macOS - "python manage.py source <environment name>/bin/activate"
   On Windows - "<environment name"\scripts\activate
   
-- Install requirements
+- Install requirements:
   "pip install -r requirements.txt"
   
-- Apply migrations
+- Apply migrations:
   "python manage.py migrate"
   
-- Run the development server
+- Run the development server:
   "python manage.py runserver"
 
 
