@@ -4,24 +4,51 @@
 <h3 align="center">TinyLife_wellness-Backend</h3>
   <img src="images/logo.png" alt="Logo" width="80" height="80">
 
-## DESCRIPTION
+
+## Description
 Welcome to the TinyLife Wellness Backend!
 This is the backend logic for TinyLife Wellness, a product that predicts the risk level of lead exposure in Kenya. The backend of this project connects the machine learning model to the web portal.
 
-### BUILT WITH
+## Table of Contents
+- [Built With](#built-with)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Contacts](#contacts)
+
+### Built With
 Django
+
+### Prerequisites
+- Python (Version 3.9)
+- Python Package Manager (pip)
+
 
 ### INSTALLATION
 To run this Django project locally, please follow these steps:
-1. Clone the repository - "git clone https://github.com/akirachix/Neza-Backend.git"
-2. Navigate to the project directory - "cd Neza-Backend"
-3. Create a virtual environment and activate it - "python -m venv (your environment name)"
-4. Install resquirements - "pip install -r requirements.txt"
-5. Apply migrations - "python manage.py migrate"
-6. Run the development server - "python manage.py runserver"
+- Clone the repository:
+  "git clone https://github.com/akirachix/Neza-Backend.git"
+  
+- Navigate to the project directory:
+  "cd Neza-Backend"
+  
+- Create a virtual environment
+  "python -m venv <your environment name>"
+
+- Activate the virtual environment
+  On Linux and macOS - "python manage.py source <environment name>/bin/activate"
+  On Windows - "<environment name"\scripts\activate
+  
+- Install requirements
+  "pip install -r requirements.txt"
+  
+- Apply migrations
+  "python manage.py migrate"
+  
+- Run the development server
+  "python manage.py runserver"
 
 
-## CONTACTS
+## Contacts
 Joyeuse Kabanyana - [@Linkedin](https://www.linkedin.com/in/joyeuse-kabanyana) - joyeusekabanyana@gmail.com
 <br>
 Esther Mwangi - [@Linkedin](https://www.linkedin.com/in/esther-mwangi-/) - mwangiestherwambuii@gmail.com
