@@ -28,11 +28,11 @@ repos:
   - repo: local
     hooks:  
       - id: pytest
-      name: Run tests (pytest)
-      entry: pytest -x
-      language: system
-      types: [python]
-      pass_filenames: false
+        name: Run tests (pytest)
+        entry: pytest -x
+        language: system
+        types: [python]
+        pass_filenames: false
   # - repo: https://github.com/psf/black
   #   rev: 22.3.0
   #   hooks:
