@@ -28,10 +28,10 @@ jobs:
         python-version: ${{ matrix.python-version }}
         
     - name: Install requirements 
-        run: pip install -r requirements.txt
-     - name: Check Syntax
-        run: pre-commit run --all-files
+      run: pip install -r requirements.txt
+      
+    - name: Check Syntax
+      run: pre-commit run --all-files
       
     - name: Run Tests
-      run:
-        python3 manage.py test
+      run: python3 manage.py test
