@@ -7,7 +7,7 @@ repos:
     hooks:
       - id: trailing-whitespace
       - id: debug-statements
-      - id: check-merge-conflict 
+      - id: check-merge-conflict
   - repo: https://github.com/PyCQA/bandit
     rev: 1.7.0
     hooks:
@@ -17,25 +17,19 @@ repos:
     rev: 3.8.4
     hooks:
       - id: flake8
-  # - repo: https://github.com/asottile/seed-isort-config
-  #   rev: v2.2.0
-  #   hooks:
-  #     - id: seed-isort-config
+  - repo: https://github.com/asottile/seed-isort-config
+    rev: v2.2.0
+    hooks:
+      - id: seed-isort-config
   - repo: https://github.com/pre-commit/mirrors-isort
     rev: v5.7.0
     hooks:
       - id: isort
   - repo: local
-    hooks:  
+    hooks:
       - id: pytest
         name: Run tests (pytest)
         entry: pytest -x
         language: system
         types: [python]
         pass_filenames: false
-  - repo: https://github.com/psf/black
-    rev: 22.3.0
-    hooks:
-      - id: black
-        exclude: ^.*\b(migrations)\b.*$
-        additional_dependencies: ['click==8.1.0']
