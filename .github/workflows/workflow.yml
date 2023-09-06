@@ -11,7 +11,7 @@ on:
       main
       dev
       staging
-     
+  
 jobs:
   build:
     runs-on: ubuntu 20.04
@@ -35,3 +35,7 @@ jobs:
     - name: Run Tests
       run:
         python3 manage.py test
+
+
+
+        # build tests
