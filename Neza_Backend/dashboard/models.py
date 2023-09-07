@@ -11,5 +11,5 @@ class Dashboard(models.Model):
     is_borehole = models.BooleanField()
     population= models.BigIntegerField()
     
-    def __str__(self):
-        return self.name
+class Meta:
+    verbose_name_plural = "Dashboard"
