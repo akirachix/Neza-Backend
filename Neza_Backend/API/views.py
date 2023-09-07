@@ -5,8 +5,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 
-# Create your views here.
-
 class UserListView(APIView):
     def get(self, request):
         users = User.objects.all()
@@ -30,7 +28,8 @@ class UserDetailView(APIView):
     
     def put(self, request, id, format=None):
         user = User.objects.get(id=id)
-        serializer = UserSerializer(user)
+        serializer = UserSerializer(user, request.data)
+        
 
         if serializer.is_valid():
             serializer.save()
