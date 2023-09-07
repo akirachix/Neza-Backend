@@ -4,7 +4,7 @@ class OrganizationStageTracking(models.Model):
     STAGENAMES=(
             ("Planning", "Planning"),
             ("Testing", "Testing"),
-            ("Treatingng", "Treating"), )
+            ("Treating", "Treating"), )
     organizationName=models.CharField(max_length=32)
     stage_name = models.CharField(max_length=255,choices=STAGENAMES)
     description = models.TextField()
