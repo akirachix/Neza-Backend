@@ -3,6 +3,9 @@ from django.utils import timezone
 
 # Create your models here.
 class DataUpload(models.Model):
+    class Meta:
+        verbose_name_plural = "data_upload"
+        
     file_name = models.CharField(max_length=255)
     file_type = models.CharField(max_length=50)
     date_uploaded = models.DateTimeField(default=timezone.now)
