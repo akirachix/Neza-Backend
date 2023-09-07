@@ -3,7 +3,7 @@ from .models import Dashboard
 
 # Register your models here.
 
-class Dashboard(admin.ModelAdmin):
+class DashboardAdmin(admin.ModelAdmin):
     display = ("location", "no_of_industries", "is_borehole ", "population" )
     
-admin.site.register(Dashboard)
+admin.site.register(Dashboard, DashboardAdmin)
