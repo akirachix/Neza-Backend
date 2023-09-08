@@ -1,6 +1,3 @@
-
-# Create your views here.
-
 from django.shortcuts import render
 from rest_framework.views import APIView
 from dataUpload.models import DataUpload
@@ -12,8 +9,6 @@ from rest_framework import status
 
 
 # Create your views here.
-
-# customer apis
 class DataUploadListView(APIView):
     def get(self, request):
         dataUploads = DataUpload.objects.all() 
