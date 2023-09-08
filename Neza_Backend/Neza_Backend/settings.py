@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'User_Registration',
     'rest_framework',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -84,7 +85,12 @@ DATABASES = {
         'PASSWORD': 'tlw',
         'HOST': 'localhost',
         'PORT': '5432',
-    }
+    },
+
+    'test': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'test_db.sqlite3', 
+    },
 }
 
 
