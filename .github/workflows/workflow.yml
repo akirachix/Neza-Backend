@@ -2,15 +2,15 @@ name: Django CI/CD
 on:
   push:
     branches:
-      main
-      dev
-      staging
+      -main
+      -dev
+      -staging
      
   pull_request:
     branches: 
-      main
-      dev
-      staging
+      -main
+      -dev
+      -staging
   
 jobs:
   build:
@@ -19,14 +19,7 @@ jobs:
       max-parallel: 4
       matrix:
         python-version: [3.9]
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-        
+    steps:    
     - name: Install requirements 
       run: pip install -r requirements.txt
     - name: Check Syntax
