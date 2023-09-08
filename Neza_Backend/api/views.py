@@ -14,6 +14,6 @@ class DashboardListView(APIView):
     
 class DashboardView(APIView):
     def get(self,request,id,format=None):
-        location_details=Dashboard.objects.get(id=id)
+        location_details=Dashboard.objects.all()
         serializer=DashboardSerializer(location_details)
         return Response(serializer.data)

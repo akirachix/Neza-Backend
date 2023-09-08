@@ -7,9 +7,12 @@ from django.db import models
 
 class Dashboard(models.Model):
     location = models.CharField(max_length=32)
-    no_of_industries = models.IntegerField()
+    no_of_industries = models.IntegerField(default=0)
     is_borehole = models.BooleanField()
     population= models.BigIntegerField()
+    
+    def __str__(self):
+        return self.name
     
 class Meta:
     verbose_name_plural = "Dashboard"
