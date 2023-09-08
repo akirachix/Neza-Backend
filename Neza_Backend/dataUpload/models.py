@@ -6,6 +6,7 @@ class DataUpload(models.Model):
     class Meta:
         verbose_name_plural = "dataUpload"
 
+    file = models.FileField(upload_to='uploads/')
     file_name = models.CharField(max_length=255)
     file_type = models.CharField(max_length=50)
     date_uploaded = models.DateTimeField(default=timezone.now)
