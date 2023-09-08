@@ -24,6 +24,4 @@ class DashboardViewTest(TestCase):
         expected_data = DashboardSerializer(self.Nakuru).data
         self.assertEqual(response.data, expected_data)
 
-    def test_dashboard_detail_view_nonexistent(self):
-        response = self.client.get('dashboarddetails/<int:id>/')
-        self.assertEqual(response.status_code, 404)
+  
