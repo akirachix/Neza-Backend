@@ -12,8 +12,3 @@ class DashboardListView(APIView):
         serializer = DashboardSerializer(location_details, many=True)
         return Response(serializer.data)
     
-class DashboardView(APIView):
-    def get(self,request,id,format=None):
-        location_details=Dashboard.objects.all()
-        serializer=DashboardSerializer(location_details)
-        return Response(serializer.data)
