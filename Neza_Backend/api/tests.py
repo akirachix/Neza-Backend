@@ -21,7 +21,6 @@ class DataUploadListViewTest(TestCase):
         data = {
             'file': file,
             'file_name': 'Nakurucase.csv',
-            'file_type': 'csv',
             'file_upload_status': 'uploaded'
         }
         response = self.client.post(url, data, format='multipart')
@@ -32,7 +31,6 @@ class DataUploadDetailViewTest(TestCase):
         self.client = APIClient()
         self.data_upload = DataUpload.objects.create(
             file_name="Nakurucase.csv",
-            file_type="csv",
             file_upload_status="uploaded",
             file=SimpleUploadedFile("test_file.csv", b"file_content", content_type="text/csv")
         )
@@ -48,8 +46,7 @@ class DataUploadDetailViewTest(TestCase):
         data = {
             'file': file,
             'file_name': 'Updated_Nakurucase.csv',
-            'file_type': 'csv',
-            'file_upload_status': 'updated'
+            'file_upload_status': 'pending'
         }
         response = self.client.put(url, data, format='multipart')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -58,3 +55,4 @@ class DataUploadDetailViewTest(TestCase):
         url = reverse('data_upload_detail_view', args=[self.data_upload.id])
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
