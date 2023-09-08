@@ -26,9 +26,9 @@ class StageTrackingListViewTest(TestCase):
         url = reverse('stage-tracking-list')
         data = {
             
-             "organizationName": "New Org",
+             "organizationName": "UNEAP Org",
              "stage_name": "Planning",
-             "description": "New description",
+             "description": "currently in planning phase",
              "start_date": "2023-02-01",
            "end_date": "2023-02-28",
 #          
