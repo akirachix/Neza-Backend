@@ -14,6 +14,7 @@ class DataUploadListViewTest(TestCase):
         url = reverse('data_upload_list_view')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+    
 
     def test_create_data_upload(self):
         url = reverse('data_upload_list_view')
@@ -22,9 +23,14 @@ class DataUploadListViewTest(TestCase):
             'file': file,
             'file_name': 'Nakurucase.csv',
             'file_upload_status': 'uploaded'
-        }
+    }
         response = self.client.post(url, data, format='multipart')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertIn('Location', response.headers)
+        location_header = response.headers['Location']
+    
+
+
 
 class DataUploadDetailViewTest(TestCase):
     def setUp(self):
