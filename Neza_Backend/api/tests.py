@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
-from User_Registration.models import User
+from user_registration.models import User
 from .serializers import UserSerializer
 
 class UserListViewTest(TestCase):
