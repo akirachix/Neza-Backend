@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from rest_framework import generics
 from user_registration.models import UserProfile
 from .serializers import UserSerializer
@@ -11,12 +12,13 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.authtoken.models import Token
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.exceptions import PermissionDenied
 
 
 class UserView(APIView):
     def get(self, request):
-        users = UserProfile.objects.all()
+        users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
     
@@ -24,21 +26,28 @@ class UserView(APIView):
         serializer = UserSerializer(data=request.data)
 
         if serializer.is_valid():
-            serializer.save()
+            username = serializer.validated_data['username']
+            email = serializer.validated_data['email']
+            password = serializer.validated_data['password']
+
+            user = User.objects.create_user(username=username, email=email, password=password)
+            UserProfile.objects.create(user=user, email=email)
+            
             return Response('Your account has been created successfully', status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserDetailView(APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
-    def get(self, request, id, format=None):
-        user = UserProfile.objects.get(id=id)
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        user = request.user
         serializer = UserSerializer(user)
         return Response(serializer.data)
     
-    def put(self, request, id, format=None):
-        user = UserProfile.objects.get(id=id)
-        serializer = UserSerializer(user, request.data)
+    def put(self, request, format=None):
+        user = request.user
+        serializer = UserSerializer(user, data=request.data)
         
 
         if serializer.is_valid():
@@ -47,11 +56,15 @@ class UserDetailView(APIView):
         
         return Response('Server was unable to process your request. Please confirm that your credentials are valid', status=status.HTTP_400_BAD_REQUEST)
     
-    def delete(self, request, id, format=None):
-        user = UserProfile.objects.get(id=id)
-        user.delete()
+    def delete(self, request, format=None):
+        user = request.user
+
+        if user:
+            user.delete()
+            return Response('User deleted successfully', status=status.HTTP_204_NO_CONTENT)
         
-        return Response('User deleted successfully', status=status.HTTP_204_NO_CONTENT)
+        else:
+            raise PermissionDenied('You do not have permission to delete this user')
     
    
 @api_view(['POST'])
