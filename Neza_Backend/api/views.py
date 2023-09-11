@@ -52,6 +52,7 @@ class UserDetailView(APIView):
 
         if serializer.is_valid():
             serializer.save()
+            
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         return Response('Server was unable to process your request. Please confirm that your credentials are valid', status=status.HTTP_400_BAD_REQUEST)
@@ -73,13 +74,15 @@ def user_login(request):
     password = request.data.get('password')
 
     user = None
-    if '@' in username:
+
+    user = authenticate(username=username, password=password)
+
+    if user is None and '@' in username:
         try:
-            user = UserProfile.objects.get(email=username)
-        except ObjectDoesNotExist:
+            user_profile = UserProfile.objects.get(email=username)
+            user = user_profile.user
+        except UserProfile.DoesNotExist:
             pass
-    if not user:
-        user = authenticate(username=username, password=password)
 
     if user:
         token, _ = Token.objects.get_or_create(user=user)
