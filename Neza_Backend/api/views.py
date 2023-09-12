@@ -130,4 +130,48 @@ def upload_file(request):
             return JsonResponse({'message': 'Invalid CSV file format'}, status=400)
     else:
         return JsonResponse({'message': 'Invalid request'}, status=400)
+    
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from dataUpload.models import ExtractedData
+from .serializers import ExtractedDataSerializer  
+
+class ExtractedDataListView(APIView):
+    def get(self, request):
+        extracted_data = ExtractedData.objects.all()
+
+        serializer = ExtractedDataSerializer(extracted_data, many=True)
+
+        return Response(serializer.data)
+
+
+
+class ExtractedDataDeleteView(APIView):
+    def delete(self, request, pk):
+        try:
+            extracted_data = ExtractedData.objects.get(pk=pk)
+            extracted_data.delete()
+            return Response("File successfully deleted",status=status.HTTP_204_NO_CONTENT)
+        except ExtractedData.DoesNotExist:
+            return Response("ExtractedData not found", status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response(f"An error occurred: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+class ExtractedDataUpdateFileView(APIView):
+    def put(self, request, pk):
+        try:
+            extracted_data = ExtractedData.objects.get(pk=pk)
+            extracted_data.file = request.FILES.get('new_file')
+            extracted_data.save()
+
+            serializer = ExtractedDataSerializer(extracted_data)
+
+            return Response(serializer.data)
+        except ExtractedData.DoesNotExist:
+            return Response("ExtractedData not found", status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response(f"An error occurred: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
