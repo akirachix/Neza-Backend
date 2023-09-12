@@ -1,12 +1,14 @@
-
+from django.http import JsonResponse
 import csv
 from rest_framework.views import APIView
-from dataUpload.models import DataUpload
-from .serializers import DataUploadSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.reverse import reverse
-from dataUpload.models import ExtractedData  
+from dataUpload.models import DataUpload
+from .serializers import DataUploadSerializer
+from dataUpload.models import ExtractedData
+from rest_framework.decorators import api_view
+
 
 class DataUploadListView(APIView):
     def get(self, request):
@@ -30,24 +32,21 @@ class DataUploadListView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response(f"An error occurred: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-
 
     def extract_and_process_data(self, data_upload_instance):
         try:
             csv_file = data_upload_instance.file.path
 
             columns_to_extract = [
-                'location',
-                'sources of water',
-                'proximity to industries',
-                'number of garages in an area',
-                'proximity to dumpsite',
-                'presence of open sewage',
-                'Past cases of lead poisoning',
-                'population (women and children)',
+                "location",
+                "sources of water",
+                "proximity to industries",
+                "number_of_garages_in_area",
+                "proximity_to_dumpsite",
+                "presence_of_open_sewage",
+                "past_cases_of_lead_poisoning",
+                "women_and_children_population",
             ]
-
 
             with open(csv_file, mode='r', encoding='utf-8') as file:
                 reader = csv.DictReader(file)
@@ -62,8 +61,6 @@ class DataUploadListView(APIView):
             return Response("Data extracted and saved successfully", status=status.HTTP_200_OK)
         except Exception as e:
             return Response(f"An error occurred while extracting and saving data: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-        
 
 class DataUploadDetailView(APIView):
     def get(self, request, id, format=None):
@@ -75,8 +72,6 @@ class DataUploadDetailView(APIView):
             return Response("DataUpload not found", status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response(f"An error occurred: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-
 
     def put(self, request, id, format=None):
         try:
@@ -91,7 +86,6 @@ class DataUploadDetailView(APIView):
         except Exception as e:
             return Response(f"An error occurred: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
     def delete(self, request, id, format=None):
         try:
             dataUpload = DataUpload.objects.get(id=id)
@@ -101,3 +95,39 @@ class DataUploadDetailView(APIView):
             return Response("DataUpload not found", status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response(f"An error occurred: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+@api_view(['POST'])
+def upload_file(request):
+    if request.method == 'POST' and request.FILES.get('file'):
+        uploaded_file = request.FILES['file']
+        file_content = uploaded_file.read().decode('utf-8')
+
+        expected_columns = ["location", "proximity to industries", "women_and_children_population", "past_cases_of_lead_poisoning"]
+
+        try:
+            reader = csv.DictReader(file_content.splitlines())
+            header = next(reader)
+
+            for column in expected_columns:
+                if column not in header:
+                    return JsonResponse({'message': f'Missing column: {column}'}, status=400)
+
+            for row in reader:
+                extracted_data = ExtractedData(
+                    location=row["location"],
+                    sources_of_water=row["sources of water"],
+                    proximity_to_industries=row["proximity to industries"],
+                    number_of_garages_in_area=row["number_of_garages_in_area"],
+                    proximity_to_dumpsite=row["proximity_to_dumpsite"],
+                    presence_of_open_sewage=row["presence_of_open_sewage"],
+                    past_cases_of_lead_poisoning=row["past_cases_of_lead_poisoning"],
+                    women_and_children_population=row["women_and_children_population"],
+                )
+                extracted_data.save()
+
+            return JsonResponse({'message': 'File uploaded and processed successfully'})
+        except csv.Error:
+            return JsonResponse({'message': 'Invalid CSV file format'}, status=400)
+    else:
+        return JsonResponse({'message': 'Invalid request'}, status=400)
+
