@@ -5,7 +5,6 @@ from .serializers import DashboardSerializer
 from rest_framework.response import Response
 
 # Create your views here.
-# customer apis
 class DashboardListView(APIView):
     def get(self,request):
         location_details = Dashboard.objects.all()

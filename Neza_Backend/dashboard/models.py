@@ -15,7 +15,7 @@ class Dashboard(models.Model):
     population= models.BigIntegerField()
     
     def __str__(self):
-        return self.name
+        return self.location
     
 class Meta:
     verbose_name_plural = "Dashboards"
