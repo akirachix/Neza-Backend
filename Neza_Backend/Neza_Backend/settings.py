@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'dataUpload',
     'api',
-    'rest_framework'
+    # 'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -87,6 +87,7 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
 
 # Media settings
 MEDIA_URL = '/media/'
