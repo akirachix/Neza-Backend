@@ -1,11 +1,42 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from stagetracking.models import OrganizationStageTracking
 from rest_framework.response import Response
-from api.serializers import StageTrackingSerializer
 from rest_framework import status
+from rest_framework.generics import ListAPIView
+from stagetracking.models import OrganizationStageTracking,OrganizationStage
+from api.serializers import StageTrackingSerializer,OrgStageSerializer
+from django.db.models import Q
+from django.http import JsonResponse
 
-# Create your views here.
+class OrganizationsInStageView(ListAPIView):
+    serializer_class = OrgStageSerializer
+    def get_queryset(self):
+        stage_name = self.kwargs['stage_name']
+        try:
+           
+            organizations_in_stage = OrganizationStage.objects.filter(
+                Q(stage_name__iexact=stage_name)
+            )
+            return organizations_in_stage
+        except OrganizationStage.DoesNotExist:
+           
+            error_message = f"No organizations found for stage '{stage_name}'."
+            return JsonResponse({'error': error_message}, status=status.HTTP_404_NOT_FOUND)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        data = self.serializer_class(queryset, many=True).data
+        result_data = []
+        for item in data:
+            organization_id = item['organization']
+            organization = OrganizationStageTracking.objects.get(id=organization_id)
+            item['organization_name'] = organization.organizationName
+            result_data.append(item)
+
+        return JsonResponse(result_data, safe=False, status=status.HTTP_200_OK)
+
+    
+
 class StageTrackingListView(APIView):
     def get(self, request):
         stagetracking =OrganizationStageTracking.objects.all() 
@@ -47,7 +78,6 @@ class StageTrackingDetailView(APIView):
             stagetracking.delete()
             return Response("Stage tracking successfully deleted", status=status.HTTP_204_NO_CONTENT)
         except OrganizationStageTracking.DoesNotExist:
-            return Response("Stage tracking not found", status=status.HTTP_404_NOT_FOUND)
-        
+            return Response("Stage tracking not found", status=status.HTTP_404_NOT_FOUND)       
     
 
