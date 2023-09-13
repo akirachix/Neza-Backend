@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'stagetracking',
     'api',
-    'rest_framework',
+    # 'rest_framework',
     
 ]
 

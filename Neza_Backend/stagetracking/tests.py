@@ -35,7 +35,7 @@ class OrganizationStageTrackingTestCase(TestCase):
         
         self.assertTrue(
             "organizationName" in str(context.exception),
-            "Organization name should be unique but is not enforced.",
+            "Organization name should be unique.",
         )
 
 
