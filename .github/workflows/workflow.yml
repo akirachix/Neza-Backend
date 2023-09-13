@@ -1,6 +1,6 @@
-# name: Django CI/CD
-# on:
-#   push:
+name: Django CI/CD
+on:
+  push:
 #     branches:
 #       - main
 #       - dev
@@ -12,9 +12,9 @@
 #       - dev
 #       - staging
   
-# jobs:
-#   build:
-#     runs-on: ubuntu 20.04
+jobs:
+  build:
+    runs-on: ubuntu 20.04
 #     strategy:
 #       max-parallel: 4
 #       matrix:
