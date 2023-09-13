@@ -15,7 +15,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.exceptions import PermissionDenied
 from django.contrib.auth import authenticate, login, logout
-import logging
 
 
 class UserView(generics.ListCreateAPIView):
@@ -57,14 +56,14 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
     def put(self, request):
-        logger = logging.getLogger(__name__)
+        
         user = request.user
         serializer = self.get_serializer(user, data=request.data)
         if serializer.is_valid():
             serializer.save()
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        logger.error('Validation errors: %s' % serializer.errors)
+        
         return Response('Server was unable to process your request, please check if your credentials are valid', status = status.HTTP_400_BAD_REQUEST)
     
     def delete(self, request):
