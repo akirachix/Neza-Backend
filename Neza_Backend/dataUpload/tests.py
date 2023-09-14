@@ -19,7 +19,7 @@ class ExtractedDataTests(TestCase):
             location="Test Location",
             sources_of_water=1,
             proximity_to_industries="Test Industries",
-            number_of_garages_in_area=5,
+            number_of_garages_in_area=5,  
             proximity_to_dumpsite="Test Dumpsite",
             presence_of_open_sewage=0,
             past_cases_of_lead_poisoning=10,
@@ -30,7 +30,7 @@ class ExtractedDataTests(TestCase):
         self.assertEqual(extracted_data.location, "Test Location")
         self.assertEqual(extracted_data.sources_of_water, 1)
         self.assertEqual(extracted_data.proximity_to_industries, "Test Industries")
-        self.assertEqual(extracted_data.number_of_garages_in_area, 5)
+        self.assertEqual(extracted_data.number_of_garages_in_area, 5) 
         self.assertEqual(extracted_data.proximity_to_dumpsite, "Test Dumpsite")
         self.assertEqual(extracted_data.presence_of_open_sewage, 0)
         self.assertEqual(extracted_data.past_cases_of_lead_poisoning, 10)

@@ -12,7 +12,7 @@ class ExtractedDataTests(TestCase):
                         "proximity to dumpsite,presence of open sewage,past cases of lead poisoning,women and children population\n" \
                         "Test Location,Yes,123,45,Yes,No,0,678\n"
         
-        response = self.client.post('/upload/', {'file': test_csv_data}, format='multipart')
+        response = self.client.post('/upload_file/', {'file': test_csv_data}, format='multipart')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(ExtractedData.objects.count(), 1)
