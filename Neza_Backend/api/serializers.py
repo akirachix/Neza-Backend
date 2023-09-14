@@ -13,3 +13,14 @@ class ExtractedDataSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+from stagetracking.models import OrganizationStageTracking,OrganizationStage
+
+class StageTrackingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=OrganizationStageTracking
+        fields="__all__"
+
+class OrgStageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=OrganizationStage
+        fields="__all__"

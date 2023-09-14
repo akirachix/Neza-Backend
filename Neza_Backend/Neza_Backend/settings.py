@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'dataUpload',
     'api',
-    # 'rest_framework'
+    'stagetracking',
+    'api',
+    
 ]
 
 MIDDLEWARE = [

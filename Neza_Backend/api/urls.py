@@ -19,3 +19,14 @@ urlpatterns = [
     path('extracted_data/<int:pk>/', views.ExtractedDataDetailView.as_view(), name='extracted_data_detail'),
     path('extracted_data/delete/<int:pk>/', views.ExtractedDataDeleteView.as_view(), name='extracted_data_delete'),
 ]
+
+from .views import StageTrackingListView,StageTrackingDetailView,OrganizationsInStageView
+
+urlpatterns=[
+    path("stagetracking",StageTrackingListView.as_view(),name="stage-tracking-list"),
+    path("stagetrackingdetails/<int:id>/",StageTrackingDetailView.as_view(),name="stage-tracking-detail"),
+    path("organizations-in-stage/<str:stage_name>/", OrganizationsInStageView.as_view(), name="organizations-in-stage"),
+
+
+ 
+]
