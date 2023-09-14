@@ -1,4 +1,5 @@
 # name: Django CI/CD
+<<<<<<< HEAD
 on:
   push:
 <<<<<<< HEAD
@@ -59,3 +60,38 @@ jobs:
       
     # - name: Run Tests
     #   run: python3 manage.py test
+=======
+# on:
+#   push:
+#     branches:
+#       -main
+#       -dev
+#       -staging
+     
+#   pull_request:
+#     branches: 
+#       -main
+#       -dev
+#       -staging
+  
+# jobs:
+#   build:
+#     runs-on: ubuntu 20.04
+#     strategy:
+#       max-parallel: 4
+#       matrix:
+#         python-version: [3.9]
+#     steps:    
+#     - name: Install requirements 
+#       run: pip install -r requirements.txt
+#     - name: Check Syntax
+#       run: pre-commit run --all-files
+      
+#     - name: Run Tests
+#       run:
+#         python3 manage.py test
+
+
+
+#         # build tests
+>>>>>>> 2556a8b9aa342f87bad0664d8832f6dfc1bd06b5
