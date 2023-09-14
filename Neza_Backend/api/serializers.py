@@ -1,12 +1,8 @@
 from rest_framework import serializers
-from stagetracking.models import OrganizationStageTracking,OrganizationStage
+from dashboard.models import Dashboard
 
-class StageTrackingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=OrganizationStageTracking
-        fields="__all__"
 
-class OrgStageSerializer(serializers.ModelSerializer):
+class DashboardSerializer(serializers.ModelSerializer):
     class Meta:
-        model=OrganizationStage
+        model= Dashboard
         fields="__all__"
