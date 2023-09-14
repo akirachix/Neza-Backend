@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import AbstractUser
-from user_registration.models import UserProfile
+from user_authentication.models import UserProfile
 
 
 class UserProfileModelTestCase(TestCase):

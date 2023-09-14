@@ -38,11 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'user_registration',
+    'user_authentication',
     'rest_framework',
     'rest_framework.authtoken',
     'api',
     'phonenumber_field',
+    'dashboard',
 ]
 
 REST_FRAMEWORK = {
@@ -51,11 +52,12 @@ REST_FRAMEWORK = {
     ],
 }
 
-AUTH_USER_MODEL = 'user_registration.UserProfile' 
+AUTH_USER_MODEL = 'user_authentication.UserProfile' 
 
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
+
 ]
 
 MIDDLEWARE = [

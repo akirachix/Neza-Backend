@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework import generics
-from user_registration.models import UserProfile
+from user_authentication.models import UserProfile
 from .serializers import UserProfileSerializer
 from rest_framework.response import Response
 from rest_framework import status
@@ -15,6 +15,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.exceptions import PermissionDenied
 from django.contrib.auth import authenticate, login, logout
+from rest_framework.views import APIView
+from dashboard.models import Dashboard
+from .serializers import DashboardSerializer
+
 
 
 class UserView(generics.ListCreateAPIView):
@@ -109,3 +113,11 @@ def logout(request):
         
         except Exception as e:
             return Response({'error':str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# Create your views here.
+class DashboardListView(APIView):
+    def get(self,request):
+        location_details = Dashboard.objects.all()
+        serializer = DashboardSerializer(location_details, many=True)
+        return Response(serializer.data)
+    
