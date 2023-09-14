@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,8 +38,26 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'user_authentication',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'api',
+    'phonenumber_field',
     'dashboard',
-    'rest_framework'
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
+
+AUTH_USER_MODEL = 'user_authentication.UserProfile' 
+
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+
 ]
 
 MIDDLEWARE = [
@@ -56,7 +75,7 @@ ROOT_URLCONF = 'Neza_Backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -83,7 +102,7 @@ DATABASES = {
         'PASSWORD': 'tlw',
         'HOST': 'localhost',
         'PORT': '5432',
-    }
+    },
 }
 
 
