@@ -1,7 +1,18 @@
 from rest_framework import serializers
 from user_authentication.models import UserProfile
 from dashboard.models import Dashboard
+from stagetracking.models import OrganizationStageTracking
+from stagetracking.models import OrganizationStage
 
+class StageTrackingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=OrganizationStageTracking
+        fields="__all__"
+
+class OrgStageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=OrganizationStage
+        fields="__all__"
 
 class UserProfileSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
