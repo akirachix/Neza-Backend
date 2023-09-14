@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from dataUpload.models import DataUpload,ExtractedData
 
+
 class DataUploadSerializer(serializers.ModelSerializer):
     class Meta:
         model = DataUpload

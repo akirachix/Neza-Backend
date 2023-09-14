@@ -1,12 +1,9 @@
-
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from dataUpload.models import ExtractedData
 from .serializers import ExtractedDataSerializer
 from django.http import Http404
-from django.test import TestCase
-from django.urls import reverse
 
 class ExtractedDataDetailView(APIView):
     def get_object(self, pk):
