@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'api',
     'phonenumber_field',
     'dashboard',
+    'stagetracking',
 ]
 
 REST_FRAMEWORK = {
@@ -97,9 +98,9 @@ WSGI_APPLICATION = 'Neza_Backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Neza',
+        'NAME': 'one',
         'USER': 'postgres',
-        'PASSWORD': 'tlw',
+        'PASSWORD': 'newpassword',
         'HOST': 'localhost',
         'PORT': '5432',
     },
