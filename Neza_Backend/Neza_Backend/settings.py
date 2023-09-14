@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'api',
+    'phonenumber_field',
 ]
 
 REST_FRAMEWORK = {
@@ -50,6 +51,12 @@ REST_FRAMEWORK = {
     ],
 }
 
+AUTH_USER_MODEL = 'user_registration.UserProfile' 
+
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
