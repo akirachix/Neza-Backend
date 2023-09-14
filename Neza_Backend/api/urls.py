@@ -15,6 +15,7 @@ from . import views
 
 urlpatterns = [
     path('upload/', views.upload_file, name='upload_file'),
+    path("extracted_data/", views.ExtractedDataListView.as_view(),name="extracted_data_list_view"),
     path('extracted_data/<int:pk>/', views.ExtractedDataDetailView.as_view(), name='extracted_data_detail'),
     path('extracted_data/delete/<int:pk>/', views.ExtractedDataDeleteView.as_view(), name='extracted_data_delete'),
 ]

@@ -1,61 +1,45 @@
-# api/tests.py
-
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django.urls import reverse
-from rest_framework import status
-from rest_framework.test import APIClient
-from dataUpload.models import DataUpload
-from api.serializers import DataUploadSerializer
 from django.test import TestCase
+from rest_framework.test import APIClient
+from rest_framework import status
+from dataUpload.models import ExtractedData
 
-class DataUploadListViewTest(TestCase):
+class ExtractedDataTests(TestCase):
     def setUp(self):
         self.client = APIClient()
 
-    def test_get_data_upload_list(self):
-        url = reverse('data_upload_list_view')
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+    def test_upload_file(self):
+        test_csv_data = "location,sources of water,proximity to industries,number of garages in an area," \
+                        "proximity to dumpsite,presence of open sewage,past cases of lead poisoning,women and children population\n" \
+                        "Test Location,Yes,123,45,Yes,No,0,678\n"
+        
+        response = self.client.post('/upload/', {'file': test_csv_data}, format='multipart')
 
-    def test_create_data_upload(self):
-        url = reverse('data_upload_list_view')
-        file = SimpleUploadedFile("test_file.csv", b"file_content", content_type="text/csv")
-        data = {
-            'file': file,
-            'file_name': 'Nakurucase.csv',
-            'file_upload_status': 'uploaded'
-        }
-        response = self.client.post(url, data, format='multipart')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertIn('Location', response.headers)
-        location_header = response.headers['Location']
+        self.assertEqual(ExtractedData.objects.count(), 1)
+        extracted_data = ExtractedData.objects.first()
+        self.assertEqual(extracted_data.location, "Test Location")
 
-class DataUploadDetailViewTest(TestCase):
-    def setUp(self):
-        self.client = APIClient()
-        self.data_upload = DataUpload.objects.create(
-            file_name="dandora.csv",
-            file_upload_status="uploaded",
-            file=SimpleUploadedFile("test_file.csv", b"file_content", content_type="text/csv")
-        )
+    def test_extracted_data_list_view(self):
+        ExtractedData.objects.create(location="Location 1", sources_of_water=1)
+        ExtractedData.objects.create(location="Location 2", sources_of_water=0)
 
-    def test_get_data_upload_detail(self):
-        url = reverse('data_upload_detail_view', args=[self.data_upload.id])
-        response = self.client.get(url)
+        response = self.client.get('/extracted-data/')
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 2)
 
-    def test_update_data_upload(self):
-        url = reverse('data_upload_detail_view', args=[self.data_upload.id])
-        file = SimpleUploadedFile("updated_file.csv", b"updated_content", content_type="text/csv")
-        data = {
-            'file': file,
-            'file_name': 'dandora.csv',
-            'file_upload_status': 'pending'
-        }
-        response = self.client.put(url, data, format='multipart')
+    def test_extracted_data_detail_view(self):
+        extracted_data = ExtractedData.objects.create(location="Location 1", sources_of_water=1)
+
+        response = self.client.get(f'/extracted-data/{extracted_data.id}/')
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['location'], "Location 1")
 
-    def test_delete_data_upload(self):
-        url = reverse('data_upload_detail_view', args=[self.data_upload.id])
-        response = self.client.delete(url)
+    def test_extracted_data_delete_view(self):
+        extracted_data = ExtractedData.objects.create(location="Location 1", sources_of_water=1)
+
+        response = self.client.delete(f'/extracted-data/{extracted_data.id}/')
+
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(ExtractedData.objects.count(), 0)

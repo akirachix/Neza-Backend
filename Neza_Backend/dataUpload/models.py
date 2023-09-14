@@ -22,11 +22,11 @@ class ExtractedData(models.Model):
         verbose_name_plural = "ExtractedData"
 
     location = models.CharField(max_length=159)
-    sources_of_water = models.PositiveIntegerField(choices=[(0, 'No'), (1, 'Yes')], default="") 
+    sources_of_water = models.PositiveIntegerField(choices=[(0, 'No'), (1, 'Yes')], default=0) 
     proximity_to_industries = models.CharField(max_length=255)
     number_of_garages_in_area = models.IntegerField()
     proximity_to_dumpsite = models.CharField(max_length=255)
-    presence_of_open_sewage = models.PositiveIntegerField(choices=[(0, 'No'), (1, 'Yes')], default="")
+    presence_of_open_sewage = models.PositiveIntegerField(choices=[(0, 'No'), (1, 'Yes')], default=0)
     past_cases_of_lead_poisoning = models.IntegerField()  
     women_and_children_population = models.IntegerField()  
     file_hash = models.CharField(max_length=32) 

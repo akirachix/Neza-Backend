@@ -14,22 +14,15 @@ def upload_file(request):
     if request.method == 'POST' and request.FILES.get('file'):
         uploaded_file = request.FILES['file']
 
-        # Check if the uploaded file is a CSV
         if not uploaded_file.name.endswith('.csv'):
             return JsonResponse({'message': 'File contents are not needed in the database. Only CSV files are accepted.'}, status=400)
 
         file_content = uploaded_file.read().decode('utf-8')
 
-        # Check if the uploaded file is a CSV
-        if not uploaded_file.name.endswith('.csv'):
-            return JsonResponse({'message': 'File contents are not needed in the database. Only CSV files are accepted.'}, status=400)
-
-        # Rest of the code for processing the CSV file...
         try:
             reader = csv.DictReader(file_content.splitlines())
             header = next(reader)
 
-            # Check if the header contains the expected columns
             expected_columns = [
                 "location",
                 "sources of water",
@@ -45,19 +38,15 @@ def upload_file(request):
                 if column not in header:
                     return JsonResponse({'message': f'Missing column: {column}'}, status=400)
 
-            # Calculate a hash of the file content
             file_hash = hashlib.md5(file_content.encode()).hexdigest()
 
-            # Check if a record with the same hash already exists
             if ExtractedData.objects.filter(file_hash=file_hash).exists():
                 return JsonResponse({'message': 'File contents already exist in the database'}, status=400)
 
             for row in reader:
-                # Convert 'Yes' and 'No' to 1 and 0
-                for column in ['sources of water', 'presence of open sewage']:
-                    row[column] = 1 if row[column].lower() == 'yes' else 0
+                row["sources of water"] = 1 if row["sources of water"].lower() == 'yes' else 0
+                row["presence of open sewage"] = 1 if row["presence of open sewage"].lower() == 'yes' else 0
 
-                # Save the file hash along with the data
                 extracted_data = ExtractedData(
                     location=row["location"],
                     sources_of_water=row["sources of water"],
@@ -78,6 +67,14 @@ def upload_file(request):
     else:
         return JsonResponse({'message': 'Invalid request'}, status=400)
 
+class ExtractedDataListView(APIView):
+    def get(self, request):
+        try:
+            extracted_data = ExtractedData.objects.all()
+            serializer = ExtractedDataSerializer(extracted_data, many=True)
+            return Response(serializer.data)
+        except Exception as e:
+            return Response(f"An error occurred: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class ExtractedDataDetailView(APIView):
     def get(self, request, pk):
@@ -89,6 +86,7 @@ class ExtractedDataDetailView(APIView):
             return Response("ExtractedData not found", status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response(f"An error occurred: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
 
 class ExtractedDataDeleteView(APIView):
     def delete(self, request, pk):
