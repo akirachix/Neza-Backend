@@ -40,8 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'dataUpload',
     'api',
-    'stagetracking',
-    'api',
     
 ]
 
@@ -60,7 +58,7 @@ ROOT_URLCONF = 'Neza_Backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -87,7 +85,7 @@ DATABASES = {
         'PASSWORD': 'tlw',
         'HOST': 'localhost',
         'PORT': '5432',
-    }
+    },
 }
 
 
