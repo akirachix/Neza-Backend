@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+<<<<<<< HEAD
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -24,4 +25,10 @@ urlpatterns = [
     path("api/",include("api.urls")),
 
    
+=======
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/', include (("api.urls"), namespace= "api") ),
+>>>>>>> 931406d46d7896fb6062b2246a3ab0a3bfdd150f
 ]
