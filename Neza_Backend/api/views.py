@@ -37,7 +37,6 @@ from dashboard.models import Dashboard
 from .serializers import DashboardSerializer
 
 
-    
 class OrganizationsInStageView(ListAPIView):
     serializer_class = OrgStageSerializer
     def get_queryset(self):
@@ -65,7 +64,6 @@ class OrganizationsInStageView(ListAPIView):
 
         return JsonResponse(result_data, safe=False, status=status.HTTP_200_OK)
 
-    
 
 class StageTrackingListView(APIView):
     def get(self, request):
@@ -169,6 +167,39 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
             return Response('User deleted successfully', status = status.HTTP_204_NO_CONTENT)
         
         return Response('You do not have permission to delete this user', status = status.HTTP_403_FORBIDDEN)
+    @api_view(['POST'])
+    def login(request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        user = None
+
+        user = authenticate(username=username, password=password)
+
+        if user is None and '@' in username:
+            try:
+                user_profile = UserProfile.objects.get(email=username)
+                user = user_profile
+
+            except UserProfile.DoesNotExist:
+                pass
+
+        if user:
+            token,_ = Token.objects.get_or_create(user=user)
+            return Response({'token': token.key}, status=status.HTTP_200_OK)
+        
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout(request):
+    if request.method == 'POST':
+        try:
+            request.user.auth_token.delete()
+            return Response({'message': 'Successfully logged out'}, status=status.HTTP_200_OK)
+        
+        except Exception as e:
+            return Response({'error':str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['POST'])
@@ -228,6 +259,12 @@ def upload_file(request):
 
     else:
         return JsonResponse({'message': 'Invalid request'}, status=400)
+
+class DashboardListView(APIView):
+    def get(self,request):
+        location_details = Dashboard.objects.all()
+        serializer = DashboardSerializer(location_details, many=True)
+        return Response(serializer.data)
 
 class ExtractedDataListView(APIView):
     def get(self, request):

@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
-from .views import OrganizationsInStageView, StageTrackingListView, StageTrackingDetailView
+from .views import OrganizationsInStageView, StageTrackingListView, StageTrackingDetailView, UserDetailView, UserView, login, logout, DashboardListView
+
 
 urlpatterns = [
     path('upload/', views.upload_file, name='upload_file'),

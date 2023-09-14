@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'dashboard',
     'stagetracking',
+    'user_authentication',
+    'rest_framework',
 ]
 
 REST_FRAMEWORK = {
@@ -95,7 +97,7 @@ WSGI_APPLICATION = 'Neza_Backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.environ.get('DB_ENGINE'),
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('DB_NAME'),
         'USER': os.environ.get('DB_USER'),
         'PASSWORD': os.environ.get('DB_PASSWORD'),
