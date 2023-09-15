@@ -1,5 +1,6 @@
 import csv
 import hashlib
+from rest_framework.parsers import FileUploadParser
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
@@ -35,7 +36,9 @@ from django.contrib.auth import authenticate, login, logout
 from rest_framework.views import APIView
 from dashboard.models import Dashboard
 from .serializers import DashboardSerializer
+from django.views.decorators.csrf import ensure_csrf_cookie
 
+# account views
 
 class OrganizationsInStageView(ListAPIView):
     serializer_class = OrgStageSerializer
@@ -153,6 +156,11 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
         user = request.user
         serializer = self.get_serializer(user, data=request.data)
         if serializer.is_valid():
+            image = request.data.get('image')
+            if image:
+                user.account.image = image
+                user.account.save()
+
             serializer.save()
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -167,28 +175,29 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
             return Response('User deleted successfully', status = status.HTTP_204_NO_CONTENT)
         
         return Response('You do not have permission to delete this user', status = status.HTTP_403_FORBIDDEN)
-    @api_view(['POST'])
-    def login(request):
-        username = request.data.get('username')
-        password = request.data.get('password')
+    
+@api_view(['POST'])
+def login(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
 
-        user = None
+    user = None
 
-        user = authenticate(username=username, password=password)
+    user = authenticate(username=username, password=password)
 
-        if user is None and '@' in username:
-            try:
-                user_profile = UserProfile.objects.get(email=username)
-                user = user_profile
+    if user is None and '@' in username:
+        try:
+            user_profile = UserProfile.objects.get(email=username)
+            user = user_profile
 
-            except UserProfile.DoesNotExist:
-                pass
+        except UserProfile.DoesNotExist:
+            pass
 
-        if user:
-            token,_ = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key}, status=status.HTTP_200_OK)
+    if user:
+        token,_ = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key}, status=status.HTTP_200_OK)
         
-        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+    return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -200,6 +209,22 @@ def logout(request):
         
         except Exception as e:
             return Response({'error':str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+# profile 
+
+class ProfileImageView(APIView):
+    parser_classes = [FileUploadParser]
+
+    def post(self, request):
+        user = request.user
+        image = request.data['image']
+
+        if image:
+            user.account.image = image
+            user.account.save()
+
+            return Response({'message': 'Profile image updated successfully'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Image data is missing'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])

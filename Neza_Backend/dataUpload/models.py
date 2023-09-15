@@ -1,5 +1,7 @@
 from django.db import models
 from django.utils import timezone
+from user_authentication.models import UserProfile
+
 
 class DataUpload(models.Model):
     class Meta:
@@ -13,6 +15,8 @@ class DataUpload(models.Model):
         ('uploaded', 'Uploaded'),
         ('completed', 'Completed'),
     ])
+    owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE,default="")
+
 
     def __str__(self):
         return self.file_name

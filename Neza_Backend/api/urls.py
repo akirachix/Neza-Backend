@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import OrganizationsInStageView, StageTrackingListView, StageTrackingDetailView, UserDetailView, UserView, login, logout, DashboardListView
+from .views import OrganizationsInStageView, StageTrackingListView, StageTrackingDetailView, UserDetailView, UserView, login, logout, DashboardListView, ProfileImageView
 
 
 urlpatterns = [
@@ -16,6 +16,8 @@ urlpatterns = [
     path("stagetracking",StageTrackingListView.as_view(),name="stage-tracking-list"),
     path("stagetrackingdetails/<int:id>/",StageTrackingDetailView.as_view(),name="stage-tracking-detail"),
     path("organizations-in-stage/<str:stage_name>/", OrganizationsInStageView.as_view(), name="organizations-in-stage"),
+    path('user/image/', ProfileImageView.as_view(), name='profile_image_view'),
+
 ]
 
 

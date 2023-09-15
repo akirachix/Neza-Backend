@@ -45,6 +45,9 @@ INSTALLED_APPS = [
     'stagetracking',
     'user_authentication',
     'rest_framework',
+    'rest_framework.authtoken',
+    'drf_yasg',
+    
 ]
 
 REST_FRAMEWORK = {
@@ -72,6 +75,17 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'Neza_Backend.urls'
+
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS':{
+        'Token':{
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in':'header'
+        }
+    }
+}
 
 TEMPLATES = [
     {
@@ -105,7 +119,7 @@ DATABASES = {
         'PORT': os.environ.get('DB_PORT'),
     },
 }
-
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Media settings
 MEDIA_URL = '/media/'
