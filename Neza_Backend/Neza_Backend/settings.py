@@ -38,13 +38,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'user_authentication',
-    'rest_framework',
-    'rest_framework.authtoken',
+    'dataUpload',
     'api',
     'phonenumber_field',
     'dashboard',
     'stagetracking',
+    'user_authentication',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'drf_yasg',
+    
 ]
 
 REST_FRAMEWORK = {
@@ -72,6 +75,17 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'Neza_Backend.urls'
+
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS':{
+        'Token':{
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in':'header'
+        }
+    }
+}
 
 TEMPLATES = [
     {
@@ -105,6 +119,11 @@ DATABASES = {
         'PORT': os.environ.get('DB_PORT'),
     },
 }
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Media settings
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # Password validation

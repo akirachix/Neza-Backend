@@ -1,3 +1,9 @@
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from dataUpload.models import ExtractedData
+from .serializers import ExtractedDataSerializer
+from django.http import Http404
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
@@ -6,6 +12,23 @@ from user_authentication.models import UserProfile
 from .serializers import UserProfileSerializer
 from rest_framework.authtoken.models import Token 
 
+
+class ExtractedDataDetailView(APIView):
+    def get_object(self, pk):
+        try:
+            return ExtractedData.objects.get(pk=pk)
+        except ExtractedData.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk):
+        extracted_data = self.get_object(pk)
+        serializer = ExtractedDataSerializer(extracted_data)
+        return Response(serializer.data)
+
+    def delete(self, request, pk):
+        extracted_data = self.get_object(pk)
+        extracted_data.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class UserViewTest(TestCase):
     def setUp(self):
@@ -82,10 +105,3 @@ class UserDetailViewTest(TestCase):
         response = self.client.post(url, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-class DashboardListViewTestCase(TestCase):
-    def setUp(self):
-        self.client = APIClient()
-        
-    def test_get_dashboard_list(self):
-        response = self.client.get('/api/dashboard/')
