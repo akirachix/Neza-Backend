@@ -79,7 +79,7 @@ class StageTrackingListView(APIView):
             serializer.save()
             return Response("Stage tracking created successfully",status=status.HTTP_201_CREATED)
         
-        return Response("error while created stage tracking",status=status.HTTP_400_BAD_REQUEST)
+        return Response("error while creating stage tracking",status=status.HTTP_400_BAD_REQUEST)
 
 class StageTrackingDetailView(APIView):
     def get(self, request, id, format=None):
@@ -114,7 +114,7 @@ class StageTrackingDetailView(APIView):
         # users
 
 class UserView(generics.ListCreateAPIView):
-    users = UserProfile.objects.all()
+    queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
 
     def get(self, request):
@@ -141,7 +141,7 @@ class UserView(generics.ListCreateAPIView):
     
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
-    users = UserProfile.objects.all()
+    queryset= UserProfile.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
 
