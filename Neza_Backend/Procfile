@@ -1,1 +1,0 @@
-web: gunicorn Neza_Backend.wsgi --log-file -
