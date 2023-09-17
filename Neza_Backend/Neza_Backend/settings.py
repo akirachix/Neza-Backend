@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,6 +38,30 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'dataUpload',
+    'api',
+    'phonenumber_field',
+    'dashboard',
+    'stagetracking',
+    'user_authentication',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'drf_yasg',
+    
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
+
+AUTH_USER_MODEL = 'user_authentication.UserProfile' 
+
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+
 ]
 
 MIDDLEWARE = [
@@ -51,10 +76,21 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'Neza_Backend.urls'
 
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS':{
+        'Token':{
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in':'header'
+        }
+    }
+}
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,14 +111,19 @@ WSGI_APPLICATION = 'Neza_Backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Neza',
-        'USER': 'postgres',
-        'PASSWORD': 'tlw',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+        'ENGINE': os.environ.get('DB_ENGINE'),
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
+    },
 }
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Media settings
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # Password validation
