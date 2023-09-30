@@ -41,7 +41,7 @@ from django.http import JsonResponse
 import joblib
 import json
 from django.views.decorators.csrf import csrf_exempt
-
+import pandas as pd
 
 
 
@@ -331,17 +331,24 @@ class ExtractedDataDeleteView(APIView):
             return Response(f"An error occurred: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-nb_model = joblib.load('neza_model.pkl')
+nb_model = joblib.load('/home/student/restructuredneza/Neza-Backend/neza_model.pkl')
 
-@csrf_exempt
+# data = pd.read_csv('/home/student/restructuredneza/Neza-Backend/neza_combined_data - neza_combined_data - neza_combined_data - neza_combined_data.csv')
+
+import csv
+csv_file ='/home/student/restructuredneza/Neza-Backend/neza_combined_data - neza_combined_data - neza_combined_data - neza_combined_data.csv'
+
+
 def predict(request):
     if request.method == 'GET':
         try:
-            precomputed_predictions = nb_model.predict()
-            predictions_list = precomputed_predictions.tolist()
-
-            return JsonResponse ({'predictions': predictions_list})
-            
+            data = []
+            with open(csv_file , mode = 'r') as csv_data_file:
+                csv_reader = csv.DictReader(csv_data_file)
+                for row in csv_reader:
+                    data.append(row)
+                    json_data = json.dumps(data)
+            return JsonResponse(json_data, safe= False)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
 
