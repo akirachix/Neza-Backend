@@ -331,7 +331,7 @@ class ExtractedDataDeleteView(APIView):
             return Response(f"An error occurred: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-nb_model = joblib.load('/home/student/restructuredneza/Neza-Backend/neza_model.pkl')
+nb_model = joblib.load('neza_model.pkl')
 
 # data = pd.read_csv('/home/student/restructuredneza/Neza-Backend/neza_combined_data - neza_combined_data - neza_combined_data - neza_combined_data.csv')
 
