@@ -331,16 +331,17 @@ class ExtractedDataDeleteView(APIView):
             return Response(f"An error occurred: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-nb_model = joblib.load('/home/student/Neza-Backend/neza_model.pkl')
+nb_model = joblib.load('/home/student/restructuredneza/Neza-Backend/neza_model.pkl')
 
 @csrf_exempt
 def predict(request):
     if request.method == 'GET':
         try:
-            predictions = nb_model.predict()
-            predictions_list = predictions.tolist()
+            precomputed_predictions = nb_model.predict()
+            predictions_list = precomputed_predictions.tolist()
 
-            return JsonResponse({'predictions': predictions_list})
+            return JsonResponse ({'predictions': predictions_list})
+            
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
 
