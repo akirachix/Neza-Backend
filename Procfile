@@ -1,1 +1,1 @@
-web: Neza_Backend/Procfile
+web: gunicorn Neza_Backend.wsgi --log-file -
