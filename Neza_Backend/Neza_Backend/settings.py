@@ -27,6 +27,8 @@ SECRET_KEY = 'django-insecure-+3ify^35=3t=b^j!id09qd!#x8cb1bp()1&o_7#0#)zpp#i@(w
 DEBUG = True
 
 ALLOWED_HOSTS = []
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_CREDENTIALS = True
 
 
 # Application definition
@@ -47,7 +49,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'drf_yasg',
-    
+    'corsheaders',
 ]
 
 REST_FRAMEWORK = {
@@ -67,11 +69,13 @@ AUTHENTICATION_BACKENDS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+  
 ]
 
 ROOT_URLCONF = 'Neza_Backend.urls'
@@ -169,3 +173,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 import django_heroku
 django_heroku.settings(locals())
+
+# local host

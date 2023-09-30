@@ -37,6 +37,13 @@ from rest_framework.views import APIView
 from dashboard.models import Dashboard
 from .serializers import DashboardSerializer
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.http import JsonResponse
+import joblib
+import json
+from django.views.decorators.csrf import csrf_exempt
+
+
+
 
 # account views
 
@@ -79,7 +86,7 @@ class StageTrackingListView(APIView):
             serializer.save()
             return Response("Stage tracking created successfully",status=status.HTTP_201_CREATED)
         
-        return Response("error while created stage tracking",status=status.HTTP_400_BAD_REQUEST)
+        return Response("error while creating stage tracking",status=status.HTTP_400_BAD_REQUEST)
 
 class StageTrackingDetailView(APIView):
     def get(self, request, id, format=None):
@@ -114,7 +121,7 @@ class StageTrackingDetailView(APIView):
         # users
 
 class UserView(generics.ListCreateAPIView):
-    users = UserProfile.objects.all()
+    queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
 
     def get(self, request):
@@ -141,7 +148,7 @@ class UserView(generics.ListCreateAPIView):
     
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
-    users = UserProfile.objects.all()
+    queryset= UserProfile.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
 
@@ -277,7 +284,7 @@ def upload_file(request):
                     file_hash=file_hash,
                 )
                 extracted_data.save()
-
+                print(".............................>>>>>>>>>>>>>>>>>>>>>")
             return JsonResponse({'message': 'File uploaded and processed successfully'})
         except csv.Error:
             return JsonResponse({'message': 'Invalid CSV file format'}, status=400)
@@ -322,3 +329,20 @@ class ExtractedDataDeleteView(APIView):
             return Response("ExtractedData not found", status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response(f"An error occurred: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+nb_model = joblib.load('/home/student/Neza-Backend/neza_model.pkl')
+
+@csrf_exempt
+def predict(request):
+    if request.method == 'GET':
+        try:
+            class_priors = nb_model.class_prior_
+            class_labels = nb_model.classes_
+
+            return JsonResponse({'class_priors': class_priors.tolist(), 'class_labels': class_labels.tolist()})
+            # return JsonResponse({'predictions': predictions_serializable})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=400)

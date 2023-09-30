@@ -17,7 +17,7 @@ urlpatterns = [
     path("stagetrackingdetails/<int:id>/",StageTrackingDetailView.as_view(),name="stage-tracking-detail"),
     path("organizations-in-stage/<str:stage_name>/", OrganizationsInStageView.as_view(), name="organizations-in-stage"),
     path('user/image/', ProfileImageView.as_view(), name='profile_image_view'),
-
+    path('predict/',  views.predict, name = 'predict')
 ]
 
 
