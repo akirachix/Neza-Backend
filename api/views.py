@@ -37,6 +37,12 @@ from rest_framework.views import APIView
 from dashboard.models import Dashboard
 from .serializers import DashboardSerializer
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.http import JsonResponse
+import joblib
+import json
+from django.views.decorators.csrf import csrf_exempt
+import pandas as pd
+
 
 # account views
 
@@ -322,3 +328,22 @@ class ExtractedDataDeleteView(APIView):
             return Response("ExtractedData not found", status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response(f"An error occurred: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+nb_model = joblib.load('neza_model.pkl')
+
+import csv
+csv_file ='/home/student/restructuredneza/Neza-Backend/neza_combined_data - neza_combined_data - neza_combined_data - neza_combined_data.csv'
+def predict(request):
+    if request.method == 'GET':
+        try:
+            data = []
+            with open(csv_file , mode = 'r') as csv_data_file:
+                csv_reader = csv.DictReader(csv_data_file)
+                for row in csv_reader:
+                    data.append(row)
+                    json_data = json.dumps(data)
+            return JsonResponse(json_data, safe= False)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
