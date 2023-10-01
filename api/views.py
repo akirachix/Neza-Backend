@@ -38,10 +38,7 @@ from dashboard.models import Dashboard
 from .serializers import DashboardSerializer
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import JsonResponse
-import joblib
-import json
-from django.views.decorators.csrf import csrf_exempt
-import pandas as pd
+
 
 
 # account views
