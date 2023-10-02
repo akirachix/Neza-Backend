@@ -143,6 +143,7 @@ class UserView(generics.ListCreateAPIView):
         
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
     
+    
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset= UserProfile.objects.all()
@@ -170,6 +171,7 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         return Response('Server was unable to process your request, please check if your credentials are valid', status = status.HTTP_400_BAD_REQUEST)
+   
     
     def delete(self, request):
         user = request.user
