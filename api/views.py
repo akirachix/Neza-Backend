@@ -120,8 +120,8 @@ class UserView(generics.ListCreateAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
 
-    def get(self, request):
-        users = UserProfile.objects.all()
+    def get(self, request,id):
+        users = UserProfile.objects.get(id=id)
         serializer = UserProfileSerializer(users, many=True)
         return Response(serializer.data)
 
@@ -177,7 +177,25 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
             return Response('User deleted successfully', status = status.HTTP_204_NO_CONTENT)
         
         return Response('You do not have permission to delete this user', status = status.HTTP_403_FORBIDDEN)
-    
+    # profile 
+
+class ProfileImageView(APIView):
+    parser_classes = [FileUploadParser]
+
+    def post(self, request):
+        user = request.user
+        image = request.data['image']
+
+        if image:
+            user.account.image = image
+            user.account.save()
+
+            return Response({'message': 'Profile image updated successfully'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Image data is missing'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        
+        
 @api_view(['POST'])
 def login(request):
     username = request.data.get('username')
@@ -211,22 +229,7 @@ def logout(request):
         
         except Exception as e:
             return Response({'error':str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-# profile 
 
-class ProfileImageView(APIView):
-    parser_classes = [FileUploadParser]
-
-    def post(self, request):
-        user = request.user
-        image = request.data['image']
-
-        if image:
-            user.account.image = image
-            user.account.save()
-
-            return Response({'message': 'Profile image updated successfully'}, status=status.HTTP_200_OK)
-        else:
-            return Response({'error': 'Image data is missing'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
