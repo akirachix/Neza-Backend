@@ -120,8 +120,8 @@ class UserView(generics.ListCreateAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
 
-    def get(self, request,id):
-        users = UserProfile.objects.get(id=id)
+    def get(self, request):
+        users = UserProfile.objects.all()
         serializer = UserProfileSerializer(users, many=True)
         return Response(serializer.data)
 
