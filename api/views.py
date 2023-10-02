@@ -142,55 +142,33 @@ class UserView(generics.ListCreateAPIView):
         
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
     
-    
-class UserDetailView(generics.RetrieveUpdateAPIView):
+
+class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset= UserProfile.objects.all()
     serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
 
-    def get_object(self):
-        return self.request.user
-
-    def get(self, request, *args, **kwargs):
-        user = self.get_object()
+    def get(self, request):
+        user = request.user
         serializer = UserProfileSerializer(user)
         return Response(serializer.data)
 
-    def put(self, request, *args, **kwargs):
-        user = self.get_object()
-        serializer = UserProfileSerializer(user, data=request.data)
+
+    def put(self, request):
+        
+        user = request.user
+        serializer = self.get_serializer(user, data=request.data)
         if serializer.is_valid():
             image = request.data.get('image')
             if image:
-                user.image = image
-                user.save()
+                user.account.image = image
+                user.account.save()
 
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-# class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
-#     queryset= UserProfile.objects.all()
-#     serializer_class = UserProfileSerializer
 
-#     def get(self, request):
-#         user = request.user
-#         serializer = UserProfileSerializer(user)
-#         return Response(serializer.data)
-
-
-#     def put(self, request):
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         
-#         user = request.user
-#         serializer = self.get_serializer(user, data=request.data)
-#         if serializer.is_valid():
-#             image = request.data.get('image')
-#             if image:
-#                 user.account.image = image
-#                 user.account.save()
-
-#             serializer.save()
-
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        
-#         return Response('Server was unable to process your request, please check if your credentials are valid', status = status.HTTP_400_BAD_REQUEST)
+        return Response('Server was unable to process your request, please check if your credentials are valid', status = status.HTTP_400_BAD_REQUEST)
     
     def delete(self, request):
         user = request.user
