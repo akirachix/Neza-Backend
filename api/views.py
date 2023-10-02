@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from dataUpload.models import ExtractedData
-from .serializers import ExtractedDataSerialihttps://github.com/akirachix/Neza-Backend.gitzer
+from .serializers import ExtractedDataSerializer
 import os
 from stagetracking.models import OrganizationStage
 from stagetracking.models import OrganizationStageTracking
