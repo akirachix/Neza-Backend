@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from dataUpload.models import ExtractedData
-from .serializers import ExtractedDataSerializer
+from .serializers import ExtractedDataSerialihttps://github.com/akirachix/Neza-Backend.gitzer
 import os
 from stagetracking.models import OrganizationStage
 from stagetracking.models import OrganizationStageTracking
@@ -147,6 +147,7 @@ class UserView(generics.ListCreateAPIView):
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset= UserProfile.objects.all()
     serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user = request.user
