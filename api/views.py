@@ -125,6 +125,7 @@ class UserView(generics.ListCreateAPIView):
         serializer = UserProfileSerializer(users, many=True)
         return Response(serializer.data)
 
+
     def post(self, request):
         serializer = self.get_serializer(data = request.data)
 
