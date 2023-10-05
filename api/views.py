@@ -38,8 +38,8 @@ from dashboard.models import Dashboard
 from .serializers import DashboardSerializer
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import JsonResponse
-
-
+from locations.models import Locations
+from .serializers import LocationSerializer
 
 # account views
 
@@ -142,7 +142,6 @@ class UserView(generics.ListCreateAPIView):
             return Response('Your account has been created successfully', status = status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
-    
     
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -331,3 +330,11 @@ class ExtractedDataDeleteView(APIView):
             return Response("ExtractedData not found", status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response(f"An error occurred: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class LocationListCreateView(generics.ListCreateAPIView):
+    queryset = Locations.objects.all()
+    serializer_class = LocationSerializer
+
+class LocationDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Locations.objects.all()
+    serializer_class = LocationSerializer

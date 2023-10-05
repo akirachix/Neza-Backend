@@ -15,7 +15,3 @@ class OrganizationStageTracking(models.Model):
 class OrganizationStage(models.Model):
     organization = models.ForeignKey(OrganizationStageTracking, on_delete=models.CASCADE)
     stage_name = models.CharField(max_length=255, choices=STAGENAMES)
-
-  
-
- 
