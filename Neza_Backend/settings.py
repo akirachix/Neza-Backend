@@ -110,18 +110,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Neza_Backend.wsgi.application'
 
-DATABASES = {
-'default': {
-    'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    'NAME': 'neza',
-    'USER': 'postgres',
-    'PASSWORD': 'newpassword',
-    'HOST': 'localhost',
-    'PORT': '5432',
-    }
-}
+# DATABASES = {
+# 'default': {
+#     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#     'NAME': 'neza',
+#     'USER': 'postgres',
+#     'PASSWORD': 'newpassword',
+#     'HOST': 'localhost',
+#     'PORT': '5432',
+#     }
+# }
 
-# DATABASES = {'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))}
+DATABASES = {'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))}
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
