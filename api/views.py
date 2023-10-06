@@ -42,7 +42,8 @@ import joblib
 import json
 from django.views.decorators.csrf import csrf_exempt
 import pandas as pd
-
+from locations.models import Locations
+from .serializers import LocationsSerializer
 
 
 # account views
@@ -235,7 +236,7 @@ class ProfileImageView(APIView):
 
 
 @api_view(['POST'])
-def upload_file(request):
+def upload_file (request):
     if request.method == 'POST' and request.FILES.get('file'):
         uploaded_file = request.FILES['file']
 
@@ -249,14 +250,15 @@ def upload_file(request):
             header = next(reader)
 
             expected_columns = [
-                "location",
-                "sources of water",
-                "proximity to industries",
-                "number of garages in an area",
-                "proximity to dumpsite",
-                "presence of open sewage",
-                "past cases of lead poisoning",
-                "women and children population",
+                "Location",
+                "Blood lead levels",
+                # "sources of water",
+                # "proximity to industries",
+                # "number of garages in an area",
+                # "proximity to dumpsite",
+                # "presence of open sewage",
+                # "past cases of lead poisoning",
+                # "women and children population",
             ]
 
             for column in expected_columns:
@@ -269,19 +271,20 @@ def upload_file(request):
                 return JsonResponse({'message': 'File contents already exist in the database'}, status=400)
 
             for row in reader:
-                row["sources of water"] = 1 if row["sources of water"].lower() == 'yes' else 0
-                row["presence of open sewage"] = 1 if row["presence of open sewage"].lower() == 'yes' else 0
+                row["Blood lead levels"] = 1 if row["Blood lead levels"].lower() == 'yes' else 0
+                row["Location"] = 1 if row["Location"].lower() == 'yes' else 0
 
                 extracted_data = ExtractedData(
-                    location=row["location"],
-                    sources_of_water=row["sources of water"],
-                    proximity_to_industries=row["proximity to industries"],
-                    number_of_garages_in_area=row["number of garages in an area"],
-                    proximity_to_dumpsite=row["proximity to dumpsite"],
-                    presence_of_open_sewage=row["presence of open sewage"],
-                    past_cases_of_lead_poisoning=row["past cases of lead poisoning"],
-                    women_and_children_population=row["women and children population"],
+                    location=row["Location"],
+                    blood_lead_levels=row["Blood lead levels"],
                     file_hash=file_hash,
+                    # proximity_to_industries=row["proximity to industries"],
+                    # number_of_garages_in_area=row["number of garages in an area"],
+                    # proximity_to_dumpsite=row["proximity to dumpsite"],
+                    # presence_of_open_sewage=row["presence of open sewage"],
+                    # past_cases_of_lead_poisoning=row["past cases of lead poisoning"],
+                    # women_and_children_population=row["women and children population"],
+                    
                 )
                 extracted_data.save()
                 print(".............................>>>>>>>>>>>>>>>>>>>>>")
@@ -353,3 +356,12 @@ def predict(request):
             return JsonResponse({'error': str(e)}, status=500)
 
     return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+class LocationListCreateView(generics.ListCreateAPIView):
+    queryset = Locations.objects.all()
+    serializer_class = LocationsSerializer
+
+class LocationDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Locations.objects.all()
+    serializer_class = LocationsSerializer
