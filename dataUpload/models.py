@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-# from user_authentication.models import UserProfile
+from user_authentication.models import UserProfile
 
 
 class DataUpload(models.Model):
@@ -10,12 +10,12 @@ class DataUpload(models.Model):
     file = models.FileField(upload_to='media/')
     file_name = models.CharField(max_length=255)
     date_uploaded = models.DateTimeField(auto_now_add=True)
-    # file_upload_status = models.CharField(max_length=16, choices=[
-    #     ('Progress', 'Progress'),
-    #     ('uploaded', 'Uploaded'),
-    #     ('completed', 'Completed'),
-    # ])
-    # owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE,default="")
+    file_upload_status = models.CharField(max_length=16, choices=[
+        ('Progress', 'Progress'),
+        ('uploaded', 'Uploaded'),
+        ('completed', 'Completed'),
+    ])
+    owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE,default="")
 
 
     def __str__(self):
