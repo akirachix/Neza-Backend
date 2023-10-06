@@ -238,7 +238,6 @@ def logout(request):
 
 
 
-
 @api_view(['POST'])
 def upload_file(request):
     if request.method == 'POST' and request.FILES.get('file'):
@@ -325,7 +324,10 @@ class ExtractedDataDeleteView(APIView):
         except Exception as e:
             return Response(f"An error occurred: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+class LocationListCreateView(generics.ListCreateAPIView):
+    queryset = Locations.objects.all()
+    serializer_class = LocationsSerializer
 
-
-
-
+class LocationDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Locations.objects.all()
+    serializer_class = LocationsSerializer
