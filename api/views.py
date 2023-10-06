@@ -238,59 +238,70 @@ def logout(request):
 
 
 
+sources_of_water = models.PositiveIntegerField(choices=[(0, 'No'), (1, 'Yes')], default=0)
+
+
+
+
+
+10:46
 @api_view(['POST'])
-def upload_file (request):
+def upload_file(request):
     if request.method == 'POST' and request.FILES.get('file'):
         uploaded_file = request.FILES['file']
-
         if not uploaded_file.name.endswith('.csv'):
             return JsonResponse({'message': 'File contents are not needed in the database. Only CSV files are accepted.'}, status=400)
-
         file_content = uploaded_file.read().decode('utf-8')
-
         try:
             reader = csv.DictReader(file_content.splitlines())
             header = next(reader)
-
             expected_columns = [
-                "Location",
-                "Blood lead levels",
+                # "Location",
+                # "Blood lead levels",
+                "location",
+                "sources of water",
+                "proximity to industries",
+                "number of garages in an area",
+                "proximity to dumpsite",
+                "presence of open sewage",
+                "lead blood levels",
+                "past cases of lead poisoning",
+                "women and children population",
             ]
-
             for column in expected_columns:
                 if column not in header:
                     return JsonResponse({'message': f'Missing column: {column}'}, status=400)
-
             file_hash = hashlib.md5(file_content.encode()).hexdigest()
-
             if ExtractedData.objects.filter(file_hash=file_hash).exists():
                 return JsonResponse({'message': 'File contents already exist in the database'}, status=400)
-
             for row in reader:
-                row["Blood lead levels"] = 1 if row["Blood lead levels"].lower() == 'yes' else 0
-                row["Location"] = 1 if row["Location"].lower() == 'yes' else 0
-
+                row["sources of water"] = 1 if row["sources of water"].lower() == 'yes' else 0
+                row["presence of open sewage"] = 1 if row["presence of open sewage"].lower() == 'yes' else 0
                 extracted_data = ExtractedData(
-                    location=row["Location"],
-                    blood_lead_levels=row["Blood lead levels"],
+                    location=row["location"],
+                    # blood_lead_levels=row["Blood lead levels"],
+                    sources_of_water=row["sources of water"],
+                    proximity_to_industries=row["proximity to industries"],
+                    number_of_garages_in_area=row["number of garages in an area"],
+                    proximity_to_dumpsite=row["proximity to dumpsite"],
+                    presence_of_open_sewage=row["presence of open sewage"],
+                    lead_blood_levels=row["lead_blood_levels"],
+                    past_cases_of_lead_poisoning=row["past cases of lead poisoning"],
+                    women_and_children_population=row["women and children population"],
                     file_hash=file_hash,
-                    
                 )
                 extracted_data.save()
-                print(".............................>>>>>>>>>>>>>>>>>>>>>")
+                print("Extracted data")
             return JsonResponse({'message': 'File uploaded and processed successfully'})
         except csv.Error:
             return JsonResponse({'message': 'Invalid CSV file format'}, status=400)
-
     else:
         return JsonResponse({'message': 'Invalid request'}, status=400)
-
 class DashboardListView(APIView):
     def get(self,request):
         location_details = Dashboard.objects.all()
         serializer = DashboardSerializer(location_details, many=True)
         return Response(serializer.data)
-
 class ExtractedDataListView(APIView):
     def get(self, request):
         try:
@@ -299,7 +310,6 @@ class ExtractedDataListView(APIView):
             return Response(serializer.data)
         except Exception as e:
             return Response(f"An error occurred: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 class ExtractedDataDetailView(APIView):
     def get(self, request, pk):
         try:
@@ -310,8 +320,6 @@ class ExtractedDataDetailView(APIView):
             return Response("ExtractedData not found", status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response(f"An error occurred: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
-
 class ExtractedDataDeleteView(APIView):
     def delete(self, request, pk):
         try:
@@ -323,10 +331,7 @@ class ExtractedDataDeleteView(APIView):
         except Exception as e:
             return Response(f"An error occurred: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class LocationListCreateView(generics.ListCreateAPIView):
-    queryset = Locations.objects.all()
-    serializer_class = LocationsSerializer
 
-class LocationDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Locations.objects.all()
-    serializer_class = LocationsSerializer
+
+
+

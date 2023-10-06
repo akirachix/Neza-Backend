@@ -24,17 +24,17 @@ class DataUpload(models.Model):
 class ExtractedData(models.Model):
     class Meta:
         verbose_name_plural = "ExtractedData"
-    file_name = models.ForeignKey(DataUpload, on_delete=models.CASCADE,default="")
+    # file_name = models.ForeignKey(DataUpload, on_delete=models.CASCADE,default="")
     location = models.CharField(max_length=159)
-    blood_lead_levels = models.CharField(max_length=32,default="")
+    sources_of_water = models.PositiveIntegerField(choices=[(0, 'No'), (1, 'Yes')], default=0)
+    proximity_to_industries = models.CharField(max_length=255)
+    number_of_garages_in_area = models.IntegerField()
+    proximity_to_dumpsite = models.CharField(max_length=255)
+    presence_of_open_sewage = models.PositiveIntegerField(choices=[(0, 'No'), (1, 'Yes')], default=0)
+    past_cases_of_lead_poisoning = models.IntegerField()  
+    women_and_children_population = models.IntegerField()  
     file_hash = models.CharField(max_length=32) 
 
-    # proximity_to_industries = models.CharField(max_length=255)
-    # number_of_garages_in_area = models.IntegerField()
-    # proximity_to_dumpsite = models.CharField(max_length=255)
-    # presence_of_open_sewage = models.PositiveIntegerField(choices=[(0, 'No'), (1, 'Yes')], default=0)
-    # past_cases_of_lead_poisoning = models.IntegerField()  
-    # women_and_children_population = models.IntegerField()  
 
     def __str__(self):
         return f"Data extracted at {self.location}"
