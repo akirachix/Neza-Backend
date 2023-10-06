@@ -24,7 +24,6 @@ class DataUpload(models.Model):
 class ExtractedData(models.Model):
     class Meta:
         verbose_name_plural = "ExtractedData"
-    # file_name = models.ForeignKey(DataUpload, on_delete=models.CASCADE,default="")
     location = models.CharField(max_length=159)
     sources_of_water = models.PositiveIntegerField(choices=[(0, 'No'), (1, 'Yes')], default=0)
     proximity_to_industries = models.CharField(max_length=255)

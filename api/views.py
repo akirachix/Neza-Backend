@@ -249,15 +249,13 @@ def upload_file(request):
             reader = csv.DictReader(file_content.splitlines())
             header = next(reader)
             expected_columns = [
-                # "Location",
-                # "Blood lead levels",
+             
                 "location",
                 "sources of water",
                 "proximity to industries",
                 "number of garages in an area",
                 "proximity to dumpsite",
                 "presence of open sewage",
-                "lead blood levels",
                 "past cases of lead poisoning",
                 "women and children population",
             ]
@@ -272,13 +270,11 @@ def upload_file(request):
                 row["presence of open sewage"] = 1 if row["presence of open sewage"].lower() == 'yes' else 0
                 extracted_data = ExtractedData(
                     location=row["location"],
-                    # blood_lead_levels=row["Blood lead levels"],
                     sources_of_water=row["sources of water"],
                     proximity_to_industries=row["proximity to industries"],
                     number_of_garages_in_area=row["number of garages in an area"],
                     proximity_to_dumpsite=row["proximity to dumpsite"],
                     presence_of_open_sewage=row["presence of open sewage"],
-                    lead_blood_levels=row["lead_blood_levels"],
                     past_cases_of_lead_poisoning=row["past cases of lead poisoning"],
                     women_and_children_population=row["women and children population"],
                     file_hash=file_hash,
