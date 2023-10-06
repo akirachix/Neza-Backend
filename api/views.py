@@ -240,11 +240,6 @@ def logout(request):
 
 sources_of_water = models.PositiveIntegerField(choices=[(0, 'No'), (1, 'Yes')], default=0)
 
-
-
-
-
-10:46
 @api_view(['POST'])
 def upload_file(request):
     if request.method == 'POST' and request.FILES.get('file'):
