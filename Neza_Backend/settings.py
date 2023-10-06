@@ -9,9 +9,10 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-import dj_database_url
+
 from pathlib import Path
 import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,8 +28,9 @@ SECRET_KEY = 'django-insecure-+3ify^35=3t=b^j!id09qd!#x8cb1bp()1&o_7#0#)zpp#i@(w
 DEBUG = True
 
 ALLOWED_HOSTS = []
-CORS_ORIGIN_ALLOW_ALL=True
-CORS_ORIGIN_ALLOW_CREDENTIALS=True
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_CREDENTIALS = True
+
 
 
 # Application definition
@@ -50,7 +52,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'drf_yasg',
     'corsheaders',
-    
+    'locations',
 ]
 
 REST_FRAMEWORK = {
@@ -76,6 +78,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+  
 ]
 
 ROOT_URLCONF = 'Neza_Backend.urls'
@@ -119,10 +122,9 @@ WSGI_APPLICATION = 'Neza_Backend.wsgi.application'
 #     'PORT': '5432',
 #     }
 # }
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 DATABASES = {'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))}
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Media settings
 MEDIA_URL = '/media/'
@@ -172,3 +174,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 import django_heroku
 django_heroku.settings(locals())
+
+# local host
