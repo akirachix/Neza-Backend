@@ -29,12 +29,21 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('location', models.CharField(max_length=159)),
-                ('blood_lead_levels', models.CharField(default='', max_length=32)),
+                ('sources_of_water', models.CharField(default='', max_length=32)),
+                ('lead_blood_levels', models.CharField(default='', max_length=32)),
+                ('proximity_to_industries', models.CharField(default='', max_length=255)),
+                ('number_of_garages_in_area', models.IntegerField(default=0)),
+                ('proximity_to_dumpsite', models.CharField(default='', max_length=255)),
+                ('presence_of_open_sewage', models.PositiveIntegerField(default=0, choices=[(0, 'No'), (1, 'Yes')])),
+                ('past_cases_of_lead_poisoning', models.IntegerField(default=0)),
+                ('women_and_children_population', models.IntegerField(default=0)),
+                ('file_name', models.CharField(default='', max_length=32)),
                 ('file_hash', models.CharField(max_length=32)),
-                ('file_name', models.ForeignKey(default='', on_delete=django.db.models.deletion.CASCADE, to='dataUpload.dataupload')),
+                # ('file_name', models.ForeignKey(default='', on_delete=django.db.models.deletion.CASCADE, to='dataUpload.dataupload')),
             ],
             options={
                 'verbose_name_plural': 'ExtractedData',
             },
         ),
     ]
+
