@@ -47,77 +47,66 @@ from .serializers import LocationsSerializer
 
 
 # account views
-
 class OrganizationsInStageView(ListAPIView):
     serializer_class = OrgStageSerializer
+
     def get_queryset(self):
         stage_name = self.kwargs['stage_name']
         try:
-           
-            organizations_in_stage = OrganizationStage.objects.filter(
-                Q(stage_name__iexact=stage_name)
+            organizations_in_stage = OrganizationStageTracking.objects.filter(
+                stage_name__iexact=stage_name
             )
             return organizations_in_stage
-        except OrganizationStage.DoesNotExist:
-           
+        except OrganizationStageTracking.DoesNotExist:
             error_message = f"No organizations found for stage '{stage_name}'."
             return JsonResponse({'error': error_message}, status=status.HTTP_404_NOT_FOUND)
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         data = self.serializer_class(queryset, many=True).data
-        result_data = []
-        for item in data:
-            organization_id = item['organization']
-            organization = OrganizationStageTracking.objects.get(id=organization_id)
-            item['organization_name'] = organization.organizationName
-            result_data.append(item)
-
-        return JsonResponse(result_data, safe=False, status=status.HTTP_200_OK)
-
+        return JsonResponse(data, safe=False, status=status.HTTP_200_OK)
 
 class StageTrackingListView(APIView):
     def get(self, request):
-        stagetracking =OrganizationStageTracking.objects.all() 
-        serializer = StageTrackingSerializer(stagetracking, many=True)
+        stagetracking = OrganizationStageTracking.objects.all()
+        serializer = OrgStageSerializer(stagetracking, many=True)
         return Response(serializer.data)
-    def post(self,request):
-        serializer=StageTrackingSerializer(data=request.data)
+
+    def post(self, request):
+        serializer = OrgStageSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response("Stage tracking created successfully",status=status.HTTP_201_CREATED)
-        
-        return Response("error while creating stage tracking",status=status.HTTP_400_BAD_REQUEST)
+            return Response("Stage tracking created successfully", status=status.HTTP_201_CREATED)
+        return Response("Error while creating stage tracking", status=status.HTTP_400_BAD_REQUEST)
 
 class StageTrackingDetailView(APIView):
     def get(self, request, id, format=None):
         try:
             stagetracking = OrganizationStageTracking.objects.get(id=id)
-            serializer = StageTrackingSerializer(stagetracking)
+            serializer = OrgStageSerializer(stagetracking)
             return Response(serializer.data)
         except OrganizationStageTracking.DoesNotExist:
             return Response("Stage tracking not found", status=status.HTTP_404_NOT_FOUND)
-    
-    
-    def put(self,request,id,format=None):
-         try:
+
+    def put(self, request, id, format=None):
+        try:
             stagetracking = OrganizationStageTracking.objects.get(id=id)
-            serializer = StageTrackingSerializer(stagetracking, data=request.data)
+            serializer = OrgStageSerializer(stagetracking, data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response("Stage tracking updated successfully", status=status.HTTP_200_OK)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-         except OrganizationStageTracking.DoesNotExist:
+        except OrganizationStageTracking.DoesNotExist:
             return Response("Stage tracking not found", status=status.HTTP_404_NOT_FOUND)
-       
-    
-    def delete(self,request,id,format=None):
+
+    def delete(self, request, id, format=None):
         try:
             stagetracking = OrganizationStageTracking.objects.get(id=id)
             stagetracking.delete()
             return Response("Stage tracking successfully deleted", status=status.HTTP_204_NO_CONTENT)
         except OrganizationStageTracking.DoesNotExist:
-            return Response("Stage tracking not found", status=status.HTTP_404_NOT_FOUND) 
+            return Response("Stage tracking not found", status=status.HTTP_404_NOT_FOUND)
+
 
         # users
 
@@ -234,20 +223,19 @@ class ProfileImageView(APIView):
         else:
             return Response({'error': 'Image data is missing'}, status=status.HTTP_400_BAD_REQUEST)
 
-
+##data upload
 @api_view(['POST'])
-def upload_file (request):
+def upload_file(request):
     if request.method == 'POST' and request.FILES.get('file'):
         uploaded_file = request.FILES['file']
 
         if not uploaded_file.name.endswith('.csv'):
-            return JsonResponse({'message': 'File contents are not needed in the database. Only CSV files are accepted.'}, status=400)
+            return JsonResponse({'message': 'Only CSV files are accepted.'}, status=400)
 
         file_content = uploaded_file.read().decode('utf-8')
 
         try:
             reader = csv.DictReader(file_content.splitlines())
-            header = next(reader)
 
             expected_columns = [
                 "location",
@@ -259,12 +247,11 @@ def upload_file (request):
                 "past cases of lead poisoning",
                 "women and children population",
                 "lead blood levels",
-                "file name"
-
+                "file_name"
             ]
 
             for column in expected_columns:
-                if column not in header:
+                if column not in reader.fieldnames:
                     return JsonResponse({'message': f'Missing column: {column}'}, status=400)
 
             file_hash = hashlib.md5(file_content.encode()).hexdigest()
@@ -273,11 +260,7 @@ def upload_file (request):
                 return JsonResponse({'message': 'File contents already exist in the database'}, status=400)
 
             for row in reader:
-                row["sources of water"] = 1 if row["sources of water"].lower() == 'yes' else 0
-                row["presence of open sewage"] = 1 if row["presence of open sewage"].lower() == 'yes' else 0
-
                 extracted_data = ExtractedData(
-
                     location=row["location"],
                     sources_of_water=row["sources of water"],
                     proximity_to_industries=row["proximity to industries"],
@@ -287,17 +270,14 @@ def upload_file (request):
                     past_cases_of_lead_poisoning=row["past cases of lead poisoning"],
                     women_and_children_population=row["women and children population"],
                     lead_blood_levels=row["lead blood levels"],
-                    file_name=row["file name"],
+                    file_name=row["file_name"],
                     file_hash=file_hash,
-
-                    
                 )
                 extracted_data.save()
-                print(".............................>>>>>>>>>>>>>>>>>>>>>")
+
             return JsonResponse({'message': 'File uploaded and processed successfully'})
         except csv.Error:
             return JsonResponse({'message': 'Invalid CSV file format'}, status=400)
-
     else:
         return JsonResponse({'message': 'Invalid request'}, status=400)
 

@@ -10,11 +10,7 @@ class DataUpload(models.Model):
     file = models.FileField(upload_to='media/')
     file_name = models.CharField(max_length=255)
     date_uploaded = models.DateTimeField(auto_now_add=True)
-    # file_upload_status = models.CharField(max_length=16,default="", choices=[
-    #     ('Progress', 'Progress'),
-    #     ('uploaded', 'Uploaded'),
-    #     ('completed', 'Completed'),
-    # ])
+
     # owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE,default="")
 
 
@@ -24,15 +20,13 @@ class DataUpload(models.Model):
 class ExtractedData(models.Model):
     class Meta:
         verbose_name_plural = "ExtractedData"
-    # fileName = models.ForeignKey(DataUpload, on_delete=models.CASCADE)
-    # data_upload = models.OneToOneField(DataUpload, on_delete=models.CASCADE,default=0)
-
+  
     location = models.CharField(max_length=159)
     sources_of_water = models.CharField(max_length=32,default="")
     proximity_to_industries = models.CharField(max_length=255,default="")
     number_of_garages_in_area = models.IntegerField(default=0)
     proximity_to_dumpsite = models.CharField(max_length=255,default="")
-    presence_of_open_sewage = models.PositiveIntegerField(choices=[(0, 'No'), (1, 'Yes')], default=0)
+    presence_of_open_sewage = models.CharField(max_length=32,default="")
     past_cases_of_lead_poisoning = models.IntegerField(default=0)  
     women_and_children_population = models.IntegerField(default=0) 
     file_hash = models.CharField(max_length=32) 
