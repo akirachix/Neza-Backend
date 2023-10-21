@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,6 +30,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_ALLOW_CREDENTIALS = True
+
 
 
 # Application definition
@@ -50,6 +52,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'drf_yasg',
     'corsheaders',
+    'locations',
 ]
 
 REST_FRAMEWORK = {
@@ -109,19 +112,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Neza_Backend.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'NezaTinylife$default',
-        'USER': 'NezaTinylife',
-        'PASSWORD': 'nezawellness',
-        'HOST': 'Tinylife.mysql.pythonanywhere-services.com',
-        'PORT': '',
-    }
-}
-
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'NezaTinylife$default',
+#         'USER': 'NezaTinylife',
+#         'PASSWORD': 'nezawellness',
+#         'HOST': 'Tinylife.mysql.pythonanywhere-services.com',
+#         'PORT': '',
+#     }
+# }
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+DATABASES = {'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))}
 
 # Media settings
 MEDIA_URL = '/media/'
