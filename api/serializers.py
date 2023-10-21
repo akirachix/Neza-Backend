@@ -14,8 +14,16 @@ class StageTrackingSerializer(serializers.ModelSerializer):
 
 class OrgStageSerializer(serializers.ModelSerializer):
     class Meta:
-        model=OrganizationStage
-        fields="__all__"
+        model = OrganizationStageTracking
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['locations'] = [location.name for location in instance.locations.all()]
+        return data
+
+
+
 
 class DataUploadSerializer(serializers.ModelSerializer):
     class Meta:
