@@ -4,7 +4,6 @@ from user_authentication.models import UserProfile
 from dashboard.models import Dashboard
 from stagetracking.models import OrganizationStageTracking
 from stagetracking.models import OrganizationStage
-from locations.models import Locations
 
 
 class StageTrackingSerializer(serializers.ModelSerializer):
@@ -14,16 +13,8 @@ class StageTrackingSerializer(serializers.ModelSerializer):
 
 class OrgStageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = OrganizationStageTracking
-        fields = '__all__'
-
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data['locations'] = [location.name for location in instance.locations.all()]
-        return data
-
-
-
+        model=OrganizationStage
+        fields="__all__"
 
 class DataUploadSerializer(serializers.ModelSerializer):
     class Meta:
@@ -38,7 +29,7 @@ class ExtractedDataSerializer(serializers.ModelSerializer):
 
 class UserProfileSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
-    image = serializers.ImageField(required=False) 
+    image = serializers.ImageField(required=False)  # Add this line
 
     class Meta:
         model = UserProfile
@@ -48,9 +39,3 @@ class DashboardSerializer(serializers.ModelSerializer):
     class Meta:
         model= Dashboard
         fields="__all__"
-
-class LocationsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Locations  
-        fields = "__all__"  
-

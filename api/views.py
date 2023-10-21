@@ -331,13 +331,10 @@ csv_file ='/home/student/restructuredneza/Neza-Backend/neza_combined_data - neza
 def predict(request):
     if request.method == 'GET':
         try:
-            data = []
-            with open(csv_file , mode = 'r') as csv_data_file:
-                csv_reader = csv.DictReader(csv_data_file)
-                for row in csv_reader:
-                    data.append(row)
-                    json_data = json.dumps(data)
-            return JsonResponse(json_data, safe= False)
+            predictions = nb_model.predict()
+            predictions_list = predictions.tolist()
+
+            return JsonResponse({'predictions': predictions_list})
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
 
