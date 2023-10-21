@@ -29,7 +29,7 @@ class ExtractedDataSerializer(serializers.ModelSerializer):
 
 class UserProfileSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
-    image = serializers.ImageField(required=False)  # Add this line
+    image = serializers.ImageField(required=False) 
 
     class Meta:
         model = UserProfile

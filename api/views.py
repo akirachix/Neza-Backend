@@ -337,11 +337,10 @@ nb_model = joblib.load('/home/student/Neza-Backend/neza_model.pkl')
 def predict(request):
     if request.method == 'GET':
         try:
-            class_priors = nb_model.class_prior_
-            class_labels = nb_model.classes_
+            predictions = nb_model.predict()
+            predictions_list = predictions.tolist()
 
-            return JsonResponse({'class_priors': class_priors.tolist(), 'class_labels': class_labels.tolist()})
-            # return JsonResponse({'predictions': predictions_serializable})
+            return JsonResponse({'predictions': predictions_list})
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
 
