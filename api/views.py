@@ -48,16 +48,15 @@ from .serializers import LocationsSerializer
 
 class OrganizationsInStageView(ListAPIView):
     serializer_class = OrgStageSerializer
+
     def get_queryset(self):
         stage_name = self.kwargs['stage_name']
         try:
-           
             organizations_in_stage = OrganizationStage.objects.filter(
                 Q(stage_name__iexact=stage_name)
             )
             return organizations_in_stage
         except OrganizationStage.DoesNotExist:
-           
             error_message = f"No organizations found for stage '{stage_name}'."
             return JsonResponse({'error': error_message}, status=status.HTTP_404_NOT_FOUND)
 
@@ -65,13 +64,15 @@ class OrganizationsInStageView(ListAPIView):
         queryset = self.get_queryset()
         data = self.serializer_class(queryset, many=True).data
         result_data = []
+
         for item in data:
             organization_id = item['organization']
-            organization = OrganizationStageTracking.objects.get(id=organization_id)
-            item['organization_name'] = organization.organizationName
+            organization = UserProfile.objects.get(id=organization_id)
+            item['organizationName'] = organization.name
             result_data.append(item)
 
-        return JsonResponse(result_data, safe=False, status=status.HTTP_200_OK)
+        return Response(result_data, status=status.HTTP_200_OK)
+
 
 
 class StageTrackingListView(APIView):

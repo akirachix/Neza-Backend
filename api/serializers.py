@@ -13,9 +13,11 @@ class StageTrackingSerializer(serializers.ModelSerializer):
         fields="__all__"
 
 class OrgStageSerializer(serializers.ModelSerializer):
+    organizationName = serializers.CharField(source='organization.organizationName.name')
+
     class Meta:
         model = OrganizationStageTracking
-        fields = '__all__'
+        fields = ['id', 'stage_name', 'description', 'start_date', 'end_date', 'organizationName', 'locations']
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
