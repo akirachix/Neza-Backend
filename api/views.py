@@ -37,21 +37,26 @@ from rest_framework.views import APIView
 from dashboard.models import Dashboard
 from .serializers import DashboardSerializer
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.http import JsonResponse
+import json
+from django.views.decorators.csrf import csrf_exempt
+from locations.models import Locations
+from .serializers import LocationsSerializer
+
 
 # account views
 
 class OrganizationsInStageView(ListAPIView):
     serializer_class = OrgStageSerializer
+
     def get_queryset(self):
         stage_name = self.kwargs['stage_name']
         try:
-           
             organizations_in_stage = OrganizationStage.objects.filter(
                 Q(stage_name__iexact=stage_name)
             )
             return organizations_in_stage
         except OrganizationStage.DoesNotExist:
-           
             error_message = f"No organizations found for stage '{stage_name}'."
             return JsonResponse({'error': error_message}, status=status.HTTP_404_NOT_FOUND)
 
@@ -59,13 +64,15 @@ class OrganizationsInStageView(ListAPIView):
         queryset = self.get_queryset()
         data = self.serializer_class(queryset, many=True).data
         result_data = []
+
         for item in data:
             organization_id = item['organization']
-            organization = OrganizationStageTracking.objects.get(id=organization_id)
-            item['organization_name'] = organization.organizationName
+            organization = UserProfile.objects.get(id=organization_id)
+            item['organizationName'] = organization.name
             result_data.append(item)
 
-        return JsonResponse(result_data, safe=False, status=status.HTTP_200_OK)
+        return Response(result_data, status=status.HTTP_200_OK)
+
 
 
 class StageTrackingListView(APIView):
@@ -122,6 +129,7 @@ class UserView(generics.ListCreateAPIView):
         serializer = UserProfileSerializer(users, many=True)
         return Response(serializer.data)
 
+
     def post(self, request):
         serializer = self.get_serializer(data = request.data)
 
@@ -166,6 +174,7 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         return Response('Server was unable to process your request, please check if your credentials are valid', status = status.HTTP_400_BAD_REQUEST)
+   
     
     def delete(self, request):
         user = request.user
@@ -175,7 +184,25 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
             return Response('User deleted successfully', status = status.HTTP_204_NO_CONTENT)
         
         return Response('You do not have permission to delete this user', status = status.HTTP_403_FORBIDDEN)
-    
+    # profile 
+
+class ProfileImageView(APIView):
+    parser_classes = [FileUploadParser]
+
+    def post(self, request):
+        user = request.user
+        image = request.data['image']
+
+        if image:
+            user.account.image = image
+            user.account.save()
+
+            return Response({'message': 'Profile image updated successfully'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Image data is missing'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        
+        
 @api_view(['POST'])
 def login(request):
     username = request.data.get('username')
@@ -209,37 +236,22 @@ def logout(request):
         
         except Exception as e:
             return Response({'error':str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-# profile 
-
-class ProfileImageView(APIView):
-    parser_classes = [FileUploadParser]
-
-    def post(self, request):
-        user = request.user
-        image = request.data['image']
-
-        if image:
-            user.account.image = image
-            user.account.save()
-
-            return Response({'message': 'Profile image updated successfully'}, status=status.HTTP_200_OK)
-        else:
-            return Response({'error': 'Image data is missing'}, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+##data upload
 @api_view(['POST'])
 def upload_file(request):
     if request.method == 'POST' and request.FILES.get('file'):
         uploaded_file = request.FILES['file']
 
         if not uploaded_file.name.endswith('.csv'):
-            return JsonResponse({'message': 'File contents are not needed in the database. Only CSV files are accepted.'}, status=400)
+            return JsonResponse({'message': 'Only CSV files are accepted.'}, status=400)
 
         file_content = uploaded_file.read().decode('utf-8')
 
         try:
             reader = csv.DictReader(file_content.splitlines())
-            header = next(reader)
 
             expected_columns = [
                 "location",
@@ -250,10 +262,12 @@ def upload_file(request):
                 "presence of open sewage",
                 "past cases of lead poisoning",
                 "women and children population",
+                "lead blood levels",
+                "file_name"
             ]
 
             for column in expected_columns:
-                if column not in header:
+                if column not in reader.fieldnames:
                     return JsonResponse({'message': f'Missing column: {column}'}, status=400)
 
             file_hash = hashlib.md5(file_content.encode()).hexdigest()
@@ -262,9 +276,6 @@ def upload_file(request):
                 return JsonResponse({'message': 'File contents already exist in the database'}, status=400)
 
             for row in reader:
-                row["sources of water"] = 1 if row["sources of water"].lower() == 'yes' else 0
-                row["presence of open sewage"] = 1 if row["presence of open sewage"].lower() == 'yes' else 0
-
                 extracted_data = ExtractedData(
                     location=row["location"],
                     sources_of_water=row["sources of water"],
@@ -274,6 +285,8 @@ def upload_file(request):
                     presence_of_open_sewage=row["presence of open sewage"],
                     past_cases_of_lead_poisoning=row["past cases of lead poisoning"],
                     women_and_children_population=row["women and children population"],
+                    lead_blood_levels=row["lead blood levels"],
+                    file_name=row["file_name"],
                     file_hash=file_hash,
                 )
                 extracted_data.save()
@@ -281,16 +294,15 @@ def upload_file(request):
             return JsonResponse({'message': 'File uploaded and processed successfully'})
         except csv.Error:
             return JsonResponse({'message': 'Invalid CSV file format'}, status=400)
-
     else:
         return JsonResponse({'message': 'Invalid request'}, status=400)
+    
 
 class DashboardListView(APIView):
     def get(self,request):
         location_details = Dashboard.objects.all()
         serializer = DashboardSerializer(location_details, many=True)
         return Response(serializer.data)
-
 class ExtractedDataListView(APIView):
     def get(self, request):
         try:
@@ -299,7 +311,6 @@ class ExtractedDataListView(APIView):
             return Response(serializer.data)
         except Exception as e:
             return Response(f"An error occurred: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 class ExtractedDataDetailView(APIView):
     def get(self, request, pk):
         try:
@@ -310,8 +321,6 @@ class ExtractedDataDetailView(APIView):
             return Response("ExtractedData not found", status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response(f"An error occurred: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
-
 class ExtractedDataDeleteView(APIView):
     def delete(self, request, pk):
         try:
@@ -322,3 +331,11 @@ class ExtractedDataDeleteView(APIView):
             return Response("ExtractedData not found", status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response(f"An error occurred: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class LocationListCreateView(generics.ListCreateAPIView):
+    queryset = Locations.objects.all()
+    serializer_class = LocationsSerializer
+
+class LocationDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Locations.objects.all()
+    serializer_class = LocationsSerializer
