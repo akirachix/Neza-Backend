@@ -13,7 +13,7 @@ class StageTrackingSerializer(serializers.ModelSerializer):
         fields="__all__"
 
 class OrgStageSerializer(serializers.ModelSerializer):
-    organizationName = serializers.CharField(source='organization.organizationName.name')
+    organizationName= serializers.CharField(source='organization.organizationName.name')
 
     class Meta:
         model = OrganizationStageTracking
