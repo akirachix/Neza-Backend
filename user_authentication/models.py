@@ -16,6 +16,7 @@ class UserProfile(AbstractUser):
         account, created = Account.objects.get_or_create(user=self)
         account.save()
 
+
 class Account(models.Model):
     user = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='account', null=True)
    

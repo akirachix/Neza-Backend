@@ -12,13 +12,12 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Dashboard',
+            name='Locations',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('location', models.CharField(max_length=32)),
-                ('no_of_industries', models.PositiveIntegerField(default=0)),
-                ('is_borehole', models.BooleanField()),
-                ('population', models.BigIntegerField()),
+                ('name', models.CharField(max_length=100)),
+                ('lat', models.FloatField()),
+                ('lng', models.FloatField()),
             ],
         ),
     ]
